@@ -1,30 +1,28 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+  import { waitUntil } from '@vercel/functions';
+
+  async function getBlog() {
+    const res = await fetch('https://api.vercel.app/blog/1');
+    return res.json();
+  }
+
+  const callback = (response) => {
+    // This callback will be triggered when the user selects or login to
+    // his Google account from the popup
+    console.log("Handle the response", response)
+  }
+</script>
+
+<script>
+  export function GET(request) {
+    return new Response(`Hello from ${process.env.VERCEL_REGION}`);
+  }
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <GoogleLogin :callback="callback" />
+  <button @click="getBlog">Get Blog</button>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>
