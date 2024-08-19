@@ -1,27 +1,20 @@
-<script setup>
-  import { waitUntil } from '@vercel/functions';
-
-  async function getBlog() {
-    const res = await fetch('https://api.vercel.app/blog/1');
-    return res.json();
-  }
-
-  const callback = (response) => {
-    // This callback will be triggered when the user selects or login to
-    // his Google account from the popup
-    console.log("Handle the response", response)
-  }
-</script>
-
 <script>
-  export function GET(request) {
-    return new Response(`Hello from ${process.env.VERCEL_REGION}`);
+import NavBarComponent from './components/NavBarComponent.vue'
+
+export default {
+  components: {
+    NavBarComponent
   }
+}
 </script>
 
 <template>
-  <GoogleLogin :callback="callback" />
-  <button @click="getBlog">Get Blog</button>
+  <div class="bg-gray-50 absolute inset-y-0 inset-x-0">
+    <NavBarComponent />
+    <main class="flex justify-center my-5">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>

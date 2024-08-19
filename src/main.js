@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import vue3GoogleLogin from 'vue3-google-login'
-import './index.css'
 
-const CLIENTID = "156760294250-q247s7ivs1cv9h6l1ocp9ctrovobme7c.apps.googleusercontent.com"
+import { router } from './routes'
+import { GoogleLogin, clientId } from './auth'
+import App from './App.vue'
+import './index.css'
 
 const app = createApp(App)
 
-app.use(vue3GoogleLogin, {
-    clientId: CLIENTID
+app.use(GoogleLogin, {
+    clientId: clientId
 })
+app.use(router)
 
 app.mount('#app')
