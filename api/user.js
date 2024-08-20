@@ -10,6 +10,7 @@ export default async function handler(request, response) {
         data: {
             name: 'Elliott',
             email: 'xelliottx@example-user.com',
+            image: ""
         },
     });
 
