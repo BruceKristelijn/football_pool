@@ -44,7 +44,7 @@ export default {
 
             this.$store.commit("setUserData", userData)
 
-            //this.$router.push({name:'Home'}); 
+            this.$router.push({name:'Home'}); 
         }
     }
 }
