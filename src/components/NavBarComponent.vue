@@ -52,13 +52,16 @@
                             </div>
                         </RouterLink>
                     </li>
+                    <li>
+                        <RouterLink to="/pool/new">Nieuwe pool maken</RouterLink>
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="flex-1">
             <a class="btn btn-ghost text-xl">Voetbal poule</a>
         </div>
-        <div class="flex-none gap-2" v-if="user != none">
+        <div class="flex-none gap-2" v-if="user != null">
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
@@ -80,7 +83,7 @@
 export default {
     computed: {
         user() {
-            console.log(this.$store.state);
+            console.log(this.$store.state.userData);
             return this.$store.state.userdata
         }
     }

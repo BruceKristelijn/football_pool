@@ -13,14 +13,14 @@ export default async function handler(request, response) {
         },
         update: {},
         create: {
-            display_name: userData.display_name,
-            email: userData.email,
+            display_name: userData.name,
+            // email: userData.email,
             google_id: userData.sub,
-            image: userData.pucture   
+            image_url: userData.picture  
         },
       })
 
-    //const users = await prisma.user.findMany();
+    const userResp = await prisma.user.findMany();
 
-    return response.status(200).json({ user });
+    return response.status(200).json({ userResp });
 }

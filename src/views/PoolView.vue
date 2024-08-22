@@ -33,11 +33,11 @@
                                 <tr>
                                     <td>
                                         <div class="avatar">
-                                                <div class="h-12 w-12 rounded-full">
-                                                    <img src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                                                        alt="Avatar Tailwind CSS Component" />
-                                                </div>
+                                            <div class="h-12 w-12 rounded-full">
+                                                <img src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                                                    alt="Avatar Tailwind CSS Component" />
                                             </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="flex items-center gap-3">
@@ -49,7 +49,7 @@
                                     <td>
                                         <ScoreBadgeComponent score="30" />
                                     </td>
-                                </tr>                                
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -67,33 +67,65 @@
 </template>
 
 <script>
-import MatchesComponent from '../components/MatchesComponent.vue'
-import ScoreBadgeComponent from '../components/ScoreBadgeComponent.vue';
+    import MatchesComponent from '../components/MatchesComponent.vue'
+    import ScoreBadgeComponent from '../components/ScoreBadgeComponent.vue';
 
-export default {
-    components: {
-        MatchesComponent,
-        ScoreBadgeComponent
-    },
-    data() {
-        return {
-            loading: true,
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-        async fetchData() {
-            // Fake 1 sec await
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            this.loading = false;
+    export default {
+        components: {
+            MatchesComponent,
+            ScoreBadgeComponent
         },
-    },
-    async created() {
-        await this.fetchData()
+        data() {
+            return {
+                loading: true,
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+            async fetchData() {
+                // Fake 1 sec await
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                this.loading = false;
+            },
+        },
+        async created() {
+            await this.fetchData()
+        }
     }
-}
 </script>
 
-<style scoped></style>
+<style scoped>
+    .nomargin {}
+
+    .list-move,
+    /* apply transition to moving elements */
+    .list-enter-active,
+    .list-leave-active {
+        transition: all 0.2s ease;
+    }
+
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    /* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+    .list-leave-active {
+        position: absolute;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.5s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0;
+        position: absolute;
+    }
+</style>

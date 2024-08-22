@@ -42,17 +42,19 @@ export default {
             const userData = decodeCredential(response.credential)
             console.log("Handle the userData", userData)
 
-            // const resp = await fetch(userApiEndPoint, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(userData)
-            // })
-            // const body = await resp.json()
-            // console.log(body)
+            const resp = await fetch(userApiEndPoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            const body = await resp.json()
+            userData.localId = body.id
 
             this.$store.commit("setUserData", userData)
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             this.$router.push({name:'Home'}); 
         }
