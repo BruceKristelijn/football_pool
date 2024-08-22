@@ -1,13 +1,19 @@
 <template>
     <div class="flex flex-col">
         <div class="card bg-base-100 w-3/4 shadow-xl self-center">
-            <div v-if="loading" class="card-body">
-                <div class="skeleton h-32 w-full"></div>
-                <div class="skeleton h-4 w-full"></div>
-                <div class="skeleton h-4 w-full"></div>
-            </div>
 
-            <div v-else class="card-body justify-center items-center">
+            <transition name="fade">
+            <div v-if="loading" class="card-body justify-center items-center" :class="{nomargin: loading}">
+                <div class="flex flex-col gap-2 w-80 m-10">
+                    <div class="skeleton h-32 w-full"></div>
+                    <div class="skeleton h-4 w-full"></div>
+                    <div class="skeleton h-4 w-full"></div>
+                </div>
+            </div>
+        </transition>
+
+        <transition name="fade">
+            <div v-if="!loading" class="card-body justify-center items-center">
                 <!-- Competition  -->
                 <div class="flex flex-row gap-2 justify-center items-center">
                     <!-- <img :src="match.area.flag" alt="Competition logo" class="w-10 h-10" /> -->
@@ -129,6 +135,7 @@
                     </div>
                 </div>
             </div>
+        </transition>
             <!-- {{ match }} -->
         </div>
     </div>
@@ -172,7 +179,6 @@ export default {
             const response = await fetch(url)
             const data = await response.json()
             this.match = data;
-            console.log(data);
             this.loading = false;
         },
         get_time_left() {
@@ -245,6 +251,9 @@ export default {
 </script>
 
 <style scoped>
+.nomargin{
+    
+}
 .list-move,
 /* apply transition to moving elements */
 .list-enter-active,
@@ -262,5 +271,16 @@ export default {
    animations can be calculated correctly. */
 .list-leave-active {
     position: absolute;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  position: absolute;
 }
 </style>

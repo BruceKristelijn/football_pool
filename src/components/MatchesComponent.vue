@@ -23,9 +23,7 @@
                             <div v-if="match.status != 'FINISHED'" class="flex flex-row gap-2 items-center">
                                 <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
                             </div>
-                            <div role="alert" class="alert alert-success">
-                                <span>30</span>
-                            </div>
+                            <ScoreBadgeComponent score="30" />
                         </div>
 
 
@@ -45,8 +43,11 @@
 import { nextTick } from 'vue'
 import { RouterLink } from 'vue-router';
 
+import ScoreBadgeComponent from './ScoreBadgeComponent.vue';
+
 export default {
     components: {
+        ScoreBadgeComponent
     },
     data() {
         return {
