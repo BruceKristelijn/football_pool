@@ -1,13 +1,13 @@
 <template>
-    <div class="justify-center flex h-96 -full overflow-y-scroll overflow-x-visible" ref="container">
-        <div role="status" class="my-10 w-80" v-if="loading">
+    <div class="justify-center flex h-96 w-full overflow-y-scroll overflow-x-visible" ref="container">
+        <div role="status" class="my-10 w-full" v-if="loading">
             <div class="skeleton h-32 w-full mb-4"></div>
             <div class="skeleton h-32 w-full"></div>
         </div>
 
         <div v-else>
                 <RouterLink v-for="match in matches" :key="match.id"  :to="'/match/' + match.id" class="card bg-base-200 my-4">
-                    <div class="card-body flex flex-row w-80">
+                    <div class="card-body flex flex-row w-full">
                         <div class="flex flex-col justify-center w-1/2">
                             <img :src="match.homeTeam.crest" alt="home team crest" class="w-10 h-10 mx-auto">
                             <p class="text-xl text-sm w-1/2 content-center mx-auto text-center">{{ match.homeTeam.tla }}

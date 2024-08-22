@@ -1,7 +1,7 @@
 <template>
-    <div class="card bg-base-100 w-96 shadow-xl">
+    <div class="card bg-base-100 w-3/4 shadow-xl">
         <div class="card-body">
-          <h2 class="card-title">Card title!</h2>
+          <h2 class="card-title">Opkomende matches</h2>
           <MatchesComponent />
         </div>
       </div>
