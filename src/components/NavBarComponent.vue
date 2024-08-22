@@ -22,7 +22,9 @@
                     </li>
                     <li><a>Voorspellen</a></li>
                     <li><a>Jouw pool 1</a></li>
-                    <li><a>jouw pool 2 <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                    <li>
+                        <RouterLink :to="'/pool/0'">jouw pool 2 <div
+                                class="avatar-group -space-x-6 rtl:space-x-reverse">
                                 <div class="avatar">
                                     <div class="w-12">
                                         <img
@@ -47,7 +49,9 @@
                                             src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                                     </div>
                                 </div>
-                            </div></a></li>
+                            </div>
+                        </RouterLink>
+                    </li>
                 </ul>
             </div>
         </div>
