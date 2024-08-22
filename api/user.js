@@ -6,15 +6,21 @@ async function createListing(client, newListing) {
 }
 
 export default async function handler(request, response) {
-    const newUser = await prisma.user.create({
-        data: {
-            name: 'Elliott',
-            email: 'xelldsfsdiottx@example-user.com',
-            image: ""
+    const userData = request.body;
+    const user = await prisma.user.upsert({
+        where: {
+            google_id: userData.sub,
         },
-    });
+        update: {},
+        create: {
+            display_name: userData.display_name,
+            email: userData.email,
+            google_id: userData.sub,
+            image: userData.pucture   
+        },
+      })
 
-    const users = await prisma.user.findMany();
+    //const users = await prisma.user.findMany();
 
-    return response.status(200).json({ message: newUser });
+    return response.status(200).json({ user });
 }
