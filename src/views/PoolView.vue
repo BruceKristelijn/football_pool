@@ -16,9 +16,15 @@
             </transition>
 
             <transition name="fade">
-                <div v-if="!loading" class="card-body justify-center items-center w-full">
+                <div v-if="!loading && pool != null" class="card-body justify-center items-center w-full">
                     <div class="overflow-x-auto">
-                        <h2>Poule stand</h2>
+                        <div class="flex flex-row place-content-around">
+                            <h2>Poule stand</h2>
+                            <button class="btn btn-sm btn-neutral" @click="openAddPlayerModal">
+                                <font-awesome-icon :icon="['fas', 'plus']" />
+                                Voeg speler toe
+                            </button>
+                        </div>
                         <table class="table">
                             <!-- head -->
                             <thead>
@@ -30,11 +36,11 @@
                             </thead>
                             <tbody>
                                 <!-- row 1 -->
-                                <tr>
+                                <tr v-for="user in pool.users">
                                     <td>
                                         <div class="avatar">
                                             <div class="h-12 w-12 rounded-full">
-                                                <img src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                                                <img :src="user.image_url"
                                                     alt="Avatar Tailwind CSS Component" />
                                             </div>
                                         </div>
@@ -42,7 +48,7 @@
                                     <td>
                                         <div class="flex items-center gap-3">
                                             <div>
-                                                <div class="font-bold">Voornaam Achternaam</div>
+                                                <div class="font-bold">{{ user.display_name }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -55,7 +61,25 @@
                     </div>
                 </div>
             </transition>
-            <!-- {{ match }} -->
+            
+            <transition name="fade">
+                <div v-if="!loading && pool == null" class="card-body justify-center items-center w-full">
+                    <div role="alert" class="alert alert-error">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6 shrink-0 stroke-current"
+                          fill="none"
+                          viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Error! Poule kan niet gevonden worden.</span>
+                      </div>
+                </div>
+            </transition>
         </div>
 
         <div class="card bg-base-100 w-full shadow-xl self-center">
@@ -64,6 +88,32 @@
             </div>
         </div>
     </div>
+
+    <dialog id="addPlayerModal" class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">Nodig een speler uit voor de pool</h3>
+            <p class="py-4">{{ modalError }}</p>
+            
+            <div v-if="copied" role="alert" class="alert alert-success mb-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 shrink-0 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Link is gekopieerd!</span>
+              </div>
+
+            <button class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg w-full" @click="copyPoolInviteUrl"><span class="bg-base-300 p-2 text-sm rounded-sm w-3/4 mr-5">{{ pool_invite_url }}</span> <font-awesome-icon :icon="['fas', 'copy']" /></button>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+        </form>
+    </dialog>
 </template>
 
 <script>
@@ -78,6 +128,9 @@
         data() {
             return {
                 loading: true,
+                copied : false,
+                pool: null,
+                pool_invite_url: "http://localhost:3000/pool/0"
             }
         },
         computed: {
@@ -86,9 +139,28 @@
         methods: {
             async fetchData() {
                 // Fake 1 sec await
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const url = window.origin + "/api/pool/get";
+                const user = this.$store.getters.userData;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ owner: user, id: this.$route.params.id })
+                })
+                const json = await response.json();
+                this.pool = json.pool;
                 this.loading = false;
             },
+            openAddPlayerModal() {
+                console.log("openAddPlayerModal")
+                addPlayerModal.showModal();
+            },
+            copyPoolInviteUrl() {
+                console.log("copyPoolInviteUrl")
+                navigator.clipboard.writeText(this.pool_invite_url);
+                this.copied=true;
+            }
         },
         async created() {
             await this.fetchData()

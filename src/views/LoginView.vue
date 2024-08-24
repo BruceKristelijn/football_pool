@@ -18,10 +18,20 @@
             </div>
         </div>
     </section>
+
+    <dialog id="login_error_modal" class="modal">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">Hello!</h3>
+          <p class="py-4">{{ modalError }}</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>OK</button>
+        </form>
+      </dialog>
 </template>
 
 <script setup>
-import { googleLogout, decodeCredential } from "vue3-google-login"
+import { googleLogout, decodeCredential, googleSdkLoaded  } from "vue3-google-login"
 import { router } from "../routes"
 </script>
 
@@ -33,28 +43,50 @@ export default {
     },
     data() {
         return {
-            loading: false
+            loading: false,
+            modalError: "An error occurred while trying to login. Please try again later."
         }
     },    
     methods: {
         callback: async function (response) {
             this.loading = true;
-            const userData = decodeCredential(response.credential)
-            console.log("Handle the userData", userData)
+            let body = {};
 
-            const resp = await fetch(userApiEndPoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
+            try {
+                const resp = await fetch(userApiEndPoint, {
+                    method: 'POST',
+                    //headers: { 'Content-Type': 'application/json'},
+                    body: response.credential
+                });
+                if (resp.ok) {
+                    body = await resp.json();
+                    
+                } else {
+                    console.error(resp)
+                    // Handle error response
+                    if (resp.status === 500) {
+                        this.modalError = "An error occurred while trying to login. Please try again later."
+                    } else if (resp.status === 401) {
+                        this.modalError = "Unauthorized. Please try again later."
+                    } else {
+                        this.modalError = "An error occurred while trying to login. Please try again later."
+                    }
+                    
+                    login_error_modal.showModal();
+                    return;
+                }
+            } catch (error) {
+                this.modalError = "An error occurred while trying to login. Please try again later."
+                login_error_modal.showModal();
+                return;
+            }
+
+            console.log(body)
+            this.$store.commit("setUserData", {credential: response.credential, user: body})
+            this.$nextTick(() => {
+                //console.log(this.$store.state.userData)
+                console.log(this.$store.getters.userData)
             })
-            const body = await resp.json()
-            userData.localId = body.id
-
-            this.$store.commit("setUserData", userData)
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
 
             this.$router.push({name:'Home'}); 
         }

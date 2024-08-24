@@ -4,17 +4,11 @@ import { validate } from '../auth.js';
 export default async function handler(request, response) {
     const body = request.body;
     const { name, inviteOnly, owner } = body;
-
-    console.log('Log:', body);
-
     const validationPayload = await validate(owner.credential);
-    console.log('validationPayload', validationPayload);
 
     if (validationPayload === false) {
         return response.status(401).json({ error: 'Invalid token' });
     }
-
-
 
     const user = await prisma.user.findUnique({
         where: {
@@ -22,22 +16,26 @@ export default async function handler(request, response) {
         }
     });
 
-    console.log('user', user);
-
-
-    const newPool = await prisma.pool.create({
-        data: {
-            name: name,
-            inviteOnly: inviteOnly || false,
-            description: '',
+    const pools = await prisma.pool.findMany({
+        where: {
             users: {
-                connect: {
+                some: {
                     id: user.id
                 }
-            },
+            }
+        },
+        include: {
+            users: {
+                select: {
+                    id: true,
+                    display_name: true,
+                    image_url: true
+                    // Add any other fields you want to include
+                }
+            }
         }
     });
 
-    return response.status(200).json({ newPool: newPool });
+    return response.status(200).json({ pools: pools });
 
 }

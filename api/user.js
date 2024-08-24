@@ -1,4 +1,5 @@
 import { prisma } from './db.js';
+import { validate } from './auth.js';
 
 async function createListing(client, newListing) {
     const { rows } = await sql`SELECT * from CARTS`;
@@ -6,21 +7,33 @@ async function createListing(client, newListing) {
 }
 
 export default async function handler(request, response) {
-    const userData = request.body;
+    // const userData = request.body;
+    const token = request.body;
+
+    const validationPayload = await validate(token);
+    // console.log('validationPayload', validationPayload);
+
+    if(validationPayload === false) {
+        return response.status(401).json({ error: 'Invalid token' });
+    }
+
+    const user_id = validationPayload.sub;
+
     const user = await prisma.user.upsert({
         where: {
-            google_id: userData.sub,
+            google_id: validationPayload.sub,
         },
         update: {},
         create: {
-            display_name: userData.name,
-            // email: userData.email,
-            google_id: userData.sub,
-            image_url: userData.picture  
+            display_name: validationPayload.name,
+            google_id: validationPayload.sub,
+            image_url: validationPayload.picture  
         },
       })
 
     const userResp = await prisma.user.findMany();
 
-    return response.status(200).json({ userResp });
+    console.log('userResp', userResp);
+
+    return response.status(200).json(JSON.stringify({payload : validationPayload, user : user}));
 }

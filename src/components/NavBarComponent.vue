@@ -13,53 +13,55 @@
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
                         <RouterLink to="/">
-                            <svg class="fill-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                <path
-                                    d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
-                            </svg>
+                            <font-awesome-icon :icon="['fas', 'house']" />
                             Voorpagina
                         </RouterLink>
                     </li>
-                    <li><a>Voorspellen</a></li>
-                    <li><a>Jouw pool 1</a></li>
                     <li>
-                        <RouterLink :to="'/pool/0'">jouw pool 2 <div
-                                class="avatar-group -space-x-6 rtl:space-x-reverse">
-                                <div class="avatar">
-                                    <div class="w-12">
-                                        <img
-                                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                    </div>
-                                </div>
-                                <div class="avatar">
-                                    <div class="w-12">
-                                        <img
-                                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                    </div>
-                                </div>
-                                <div class="avatar">
-                                    <div class="w-12">
-                                        <img
-                                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                    </div>
-                                </div>
-                                <div class="avatar">
-                                    <div class="w-12">
-                                        <img
-                                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                    </div>
-                                </div>
-                            </div>
+                        <a>
+                            <font-awesome-icon :icon="['fas', 'dice']" />
+                            Voorspellen
+                        </a>
+                    </li>
+
+                    <li>
+                        <RouterLink to="/pool/new">
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            Nieuwe poule maken
                         </RouterLink>
                     </li>
-                    <li>
-                        <RouterLink to="/pool/new">Nieuwe pool maken</RouterLink>
+
+                    <li class="mt-3 pointer-events-none">
+                        <b>Mijn poules:</b>
+                    </li>
+
+
+                    <li v-if="!isLoadingUserPools" v-for="pool in userPools">
+                        <PoolButtonNavBarComponent :pool="pool"></PoolButtonNavBarComponent>
+                    </li>
+
+                    <li v-if="isLoadingUserPools" class="flex flex-row align-middle p2">
+                        <div class="skeleton h-4 w-20 m-1 ml-2 mt-2.5"></div>
+                        <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                            <div class="avatar">
+                                <div class="w-6">
+                                    <div class="skeleton h-6 w-6 shrink-0 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="avatar">
+                                <div class="w-6">
+                                    <div class="skeleton h-6 w-6 shrink-0 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="avatar">
+                                <div class="w-6">
+                                    <div class="skeleton h-6 w-6 shrink-0 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
-        </div>
-        <div class="flex-1">
-            <a class="btn btn-ghost text-xl">Voetbal poule</a>
         </div>
         <div class="flex-none gap-2" v-if="user != null">
             <div class="dropdown dropdown-end">
@@ -80,12 +82,43 @@
 </template>
 
 <script>
-export default {
-    computed: {
-        user() {
-            console.log(this.$store.state.userData);
-            return this.$store.state.userdata
+    import PoolButtonNavBarComponent from './PoolButtonNavBarComponent.vue';
+
+    export default {
+        components: {
+            PoolButtonNavBarComponent
+        },
+        computed: {
+            user() {
+                console.log(this.$store.state.userData);
+                return this.$store.state.userdata
+            }
+        },
+        methods: {
+            async getUserPools() {
+                this.isLoadingUserPools = true;
+                const user = this.$store.getters.userData;
+                const response = await fetch(`${window.origin}/api/pool/list`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ owner: user })
+                })
+                const json = await response.json();
+                console.log(json);
+                this.userPools = json.pools;
+                this.isLoadingUserPools = false;
+            }
+        },
+        data: function () {
+            return {
+                isLoadingUserPools: true,
+                userPools: []
+            }
+        },
+        async created() {
+            await this.getUserPools();
         }
     }
-}
 </script>

@@ -92,8 +92,7 @@
                 if(this.submitting) return;
                 this.submitting = true;
 
-                console.log(this.$store.userData)
-
+                const userData = this.$store.getters.userData;
                 const resp = await fetch(createPath, {
                     method: 'POST',
                     headers: {
@@ -102,7 +101,7 @@
                     body: JSON.stringify({
                         name: this.poolName,
                         isPrivate: this.poolPrivate,
-                        userData: this.$store.state.userData
+                        owner: userData
                     })
                 })
 

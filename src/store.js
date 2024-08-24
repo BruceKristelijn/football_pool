@@ -9,12 +9,17 @@ const vuexLocal = new VuexPersistence({
 export const store = createStore({
     state() {
         return {
-            userdata: null
+            userData: null
         }
     },
     mutations: {
-        setUserData(state, userdata) {
-            state.userdata = userdata
+        setUserData(state, payload) {
+            state.userData = payload
+        }
+    },
+    getters: {
+        userData(state) {
+            return state.userData
         }
     },
     plugins: [vuexLocal.plugin]
