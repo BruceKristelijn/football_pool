@@ -14,16 +14,11 @@ export default async function handler(request, response) {
         return response.status(401).json({ error: 'Invalid token' });
     }
 
-
-
     const user = await prisma.user.findUnique({
         where: {
             google_id: validationPayload.sub
         }
     });
-
-    console.log('user', user);
-
 
     const newPool = await prisma.pool.create({
         data: {
@@ -35,6 +30,11 @@ export default async function handler(request, response) {
                     id: user.id
                 }
             },
+            owner: {
+                connect: {
+                    id: user.id
+                }
+            }
         }
     });
 

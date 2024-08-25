@@ -106,7 +106,9 @@
                 })
 
                 const data = await resp.json();
-                console.log(data);
+                
+                // Redirect to /pool/:id
+                this.$router.push({ path: "/pool/" + data.newPool.id, params: { id: data.newPool.id }})
             }
         },
         async created() {

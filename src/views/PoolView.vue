@@ -32,6 +32,7 @@
                                     <th></th>
                                     <th>Naam</th>
                                     <th>Punten</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,6 +55,12 @@
                                     </td>
                                     <td>
                                         <ScoreBadgeComponent score="30" />
+                                    </td>
+                                    
+                                    <td v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
+                                        <button class="btn btn-sm" @click="kickPlayer(user)">
+                                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -114,6 +121,22 @@
         <form method="dialog" class="modal-backdrop">
         </form>
     </dialog>
+
+    <!-- Open the modal using ID.showModal() method -->
+<dialog id="remove_player_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold" v-if="to_remove">Wil je {{to_remove.display_name}} uit de poule verwijderen?</h3>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn btn-primary" @click="removePlayer()">Ja</button>
+    </form>
+        <form method="dialog">
+        <button class="btn btn-decondary">Nee</button>
+      </form>
+    </div>
+  </div>
+</dialog>
 </template>
 
 <script>
@@ -130,7 +153,9 @@
                 loading: true,
                 copied : false,
                 pool: null,
-                pool_invite_url: "http://localhost:3000/pool/0"
+                to_remove: null,
+                pool_invite_url: "http://localhost:3000/pool/0",
+                Pool_just_joined: this.$route.query.joined === 'true'
             }
         },
         computed: {
@@ -160,10 +185,36 @@
                 console.log("copyPoolInviteUrl")
                 navigator.clipboard.writeText(this.pool_invite_url);
                 this.copied=true;
+            },
+            kickPlayer(user) {
+                this.to_remove = user;
+                remove_player_modal.showModal();
+            },
+            async removePlayer() {
+                try {
+                    console.log("removePlayer");
+                    const url = window.origin + "/api/pool/kick";
+                    const user = this.$store.getters.userData;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ owner: user, id: this.$route.params.id, user: this.to_remove })
+                    });
+                    const json = await response.json();
+                    this.pool = json.pool;
+                    this.to_remove = null;
+                } catch (error) {
+                    console.error("Error removing player:", error);
+                    // Handle error here
+                }
             }
         },
         async created() {
+            console.log(this.$store.getters.userData.user.user.id)
             await this.fetchData()
+            this.pool_invite_url = window.origin + "/pool/" + this.$route.params.id + "/join";
         }
     }
 </script>

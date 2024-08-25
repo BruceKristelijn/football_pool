@@ -5,6 +5,7 @@ import AccountView from './views/AccountView.vue'
 import LoginView from './views/LoginView.vue'
 import MatchView from './views/MatchView.vue'
 import NewPoolView from './views/NewPoolView.vue'
+import JoinPoolView from './views/JoinPoolView.vue'
 import PoolView from './views/PoolView.vue'
 
 const routes = [
@@ -14,6 +15,7 @@ const routes = [
     { path: '/match/:id', component: MatchView },
     { path: '/pool/new', component: NewPoolView },
     { path: '/pool/:id', component: PoolView },
+    { path: '/pool/:id/join', component: JoinPoolView },
 ]
 
 export const router = createRouter({

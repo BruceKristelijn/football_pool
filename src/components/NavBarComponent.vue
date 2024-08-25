@@ -118,7 +118,9 @@
             }
         },
         async created() {
-            await this.getUserPools();
+            if(this.$store.getters.userData) {
+                await this.getUserPools();
+            }
         }
     }
 </script>

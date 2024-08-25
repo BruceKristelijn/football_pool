@@ -82,7 +82,7 @@ export default {
             }
 
             console.log(body)
-            this.$store.commit("setUserData", {credential: response.credential, user: body})
+            this.$store.commit("setUserData", {credential: response.credential, user: JSON.parse(body)})
             this.$nextTick(() => {
                 //console.log(this.$store.state.userData)
                 console.log(this.$store.getters.userData)

@@ -17,6 +17,7 @@ model User {
 
   predictions Prediction[]
   pools       Pool[]
+  ownedPools  Pool[]       @relation("UserOwnedPools")
 }
 
 model Prediction {
@@ -39,4 +40,8 @@ model Pool {
   description String
   inviteOnly  Boolean
   users       User[]
+  ownerId     Int
+  owner       User    @relation("UserOwnedPools", fields: [ownerId], references: [id])
+
+  @@index([ownerId])
 }
