@@ -12,7 +12,7 @@ export default {
   <div class="bg-gray-50 absolute inset-y-0 inset-x-0">
     <NavBarComponent />
     <main class="flex justify-center my-5">
-      <RouterView />
+      <RouterView class="w-3/4" />
     </main>
   </div>
 </template>
