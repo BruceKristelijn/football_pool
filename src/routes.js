@@ -7,10 +7,12 @@ import MatchView from './views/MatchView.vue'
 import NewPoolView from './views/NewPoolView.vue'
 import JoinPoolView from './views/JoinPoolView.vue'
 import PoolView from './views/PoolView.vue'
+import PredictView from './views/PredictView.vue'
 
 const routes = [
     { name: "Home", path: '/', component: HomeView },
     { path: '/account', component: AccountView },
+    { path: '/predict', component: PredictView },
     { path: '/login', component: LoginView },
     { path: '/match/:id', component: MatchView },
     { path: '/pool/new', component: NewPoolView },
