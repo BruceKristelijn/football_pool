@@ -18,10 +18,10 @@
                         </RouterLink>
                     </li>
                     <li>
-                        <a>
+                        <RouterLink to="/predict">
                             <font-awesome-icon :icon="['fas', 'dice']" />
                             Voorspellen
-                        </a>
+                        </RouterLink>
                     </li>
 
                     <li>
