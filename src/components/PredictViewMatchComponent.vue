@@ -15,6 +15,19 @@
                     <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
                 </div>
             </div>
+
+            <!-- Final Score display -->
+            <div v-if="match_state == 2" class="flex-none badge p-2">
+                <p class="text-sm">
+                    {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
+                </p>
+            </div>
+
+            <!-- Points earned display -->
+            <div v-if="match_state == 2" class="flex-none">
+                <ScoreBadgeComponent :score="match.user_score || 0" />
+            </div>
+
             <!-- <div class="flex-none">1 - 0</div> -->
             <font-awesome-icon v-if="match.prediction == null && match.status == 'TIMED'"
                 style="color:var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));" class="mt-1"
@@ -87,7 +100,12 @@
 </template>
 
 <script>
+     import ScoreBadgeComponent from './ScoreBadgeComponent.vue';
+
     export default {
+        components: {
+            ScoreBadgeComponent
+        },
         async created() {
             if (this.match.prediction != null) {
                 console.log(this.match.prediction)
@@ -180,7 +198,7 @@
                 isMatchPredictionLoading: false,
                 predictionFormErrors: []
             }
-        },
+        }
     }
 </script>
 

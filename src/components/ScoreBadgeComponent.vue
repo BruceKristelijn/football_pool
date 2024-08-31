@@ -9,15 +9,15 @@
 </template>
 
 <script>
-export default{
-    props: ['score'],
-    computed: {
-        class() {
-            return {
-                'badge-success': this.score > 0,
-                'badge-error': this.score < 0
+    export default {
+        props: ['score'],
+        computed: {
+            class() {
+                return {
+                    'badge-success': this.score > 0,
+                    'badge-error': this.score < 0
+                }
             }
         }
     }
-}
 </script>

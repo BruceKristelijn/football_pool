@@ -1,6 +1,6 @@
 import config from './config.json' assert { type: "json" };
 import { prisma } from './db.js';
-import { getMatchPrediction } from './match.js';
+import { getMatchPrediction, getScore } from './match.js';
 import { validate } from './auth.js';
 
 // https://www.football-data.org/documentation/quickstart
@@ -29,9 +29,15 @@ export default async function handler(request, response) {
     const data = await res.json();
     for (let i = 0; i < data.matches.length; i++) {
         const prediction = await getMatchPrediction(data.matches[i].id, db_user.id);
+        const score = await getScore(data.matches[i], db_user.id);
+        
         if (prediction) {
             data.matches[i].prediction = prediction;
-        }        
+        }
+        
+        if (score) {
+            data.matches[i].user_score = score;
+        }
     }
     return response.status(200).json(data);
 }

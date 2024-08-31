@@ -46,3 +46,40 @@ export async function getMatchPrediction(match_id, user_id) {
 
     return prediction;
 }
+
+export async function getScore(match, user_id) {
+    let score = 0;
+    const match_id = match.id;
+    const prediction = await prisma.prediction.findFirst({
+        where: {
+            matchId: "" + (match_id),
+            userId: Number.parseInt(user_id)
+        }
+    });
+
+    if (!prediction) {
+        return score;
+    }
+
+    if (match.score.halfTime.away === prediction.halftimeScoreAway) {
+        score += 3;
+    }
+    if (match.score.halfTime.home === prediction.halftimeScoreHome) {
+        score += 3;
+    }
+    if (match.score.halfTime.away === prediction.halftimeScoreAway && match.score.halfTime.home === prediction.halftimeScoreHome) {
+        score += 4;
+    }
+
+    if (match.score.fullTime.away === prediction.fulltimeScoreAway) {
+        score += 3;
+    }
+    if (match.score.fullTime.home === prediction.fulltimeScoreHome) {
+        score += 3;
+    }
+    if (match.score.fullTime.away === prediction.fulltimeScoreAway && match.score.fullTime.home === prediction.fulltimeScoreHome) {
+        score += 4;
+    }
+    
+    return score;
+}
