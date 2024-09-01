@@ -63,11 +63,11 @@
                 </ul>
             </div>
         </div>
-        <div class="flex-none gap-2" v-if="user != null">
+        <div class="flex-none gap-2" v-if="userData != null">
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Tailwind CSS Navbar component" :src="user.picture" />
+                        <img alt="Tailwind CSS Navbar component" :src="userData.picture" />
                     </div>
                 </div>
                 <ul tabindex="0"
@@ -88,12 +88,6 @@
         components: {
             PoolButtonNavBarComponent
         },
-        computed: {
-            user() {
-                console.log(this.$store.state.userData);
-                return this.$store.state.userdata
-            }
-        },
         methods: {
             async getUserPools() {
                 this.isLoadingUserPools = true;
@@ -105,22 +99,39 @@
                     },
                     body: JSON.stringify({ owner: user })
                 })
+
                 const json = await response.json();
-                console.log(json);
                 this.userPools = json.pools;
                 this.isLoadingUserPools = false;
+            },
+            onStoreMutation(mutation, state) {
+                console.log(mutation.type)
+                console.log(mutation.payload)
+
+                if (mutation.type === 'setUserData') {
+                    this.userData = mutation.payload;
+                    this.getUserPools();
+                }
             }
         },
         data: function () {
             return {
                 isLoadingUserPools: true,
+                userData: undefined,
                 userPools: []
             }
         },
         async created() {
-            if(this.$store.getters.userData) {
+            if (this.$store.getters.userData) {
+                this.userData = this.$store.getters.userData;
                 await this.getUserPools();
             }
+
+            self.unSubscribe = this.$store.subscribe(self.onStoreMutation);
+        },
+        beforeDestroy() {
+            if(self.unSubscribe)
+                self.unSubscribe(); 
         }
     }
 </script>

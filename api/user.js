@@ -31,7 +31,11 @@ export default async function handler(request, response) {
         },
       })
 
-    const userResp = await prisma.user.findMany();
+    const userResp = await prisma.user.findFirst({
+        where: {
+            google_id: validationPayload.sub,
+        },
+    });
 
     console.log('userResp', userResp);
 

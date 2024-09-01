@@ -54,7 +54,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <ScoreBadgeComponent score="30" />
+                                        <ScoreBadgeComponent :score="user.score" />
                                     </td>
                                     
                                     <td v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
@@ -163,15 +163,15 @@
         },
         methods: {
             async fetchData() {
-                // Fake 1 sec await
-                const url = window.origin + "/api/pool/get";
+                // Get the pool users
+                const url = window.origin + "/api/pool/get_scores";
                 const user = this.$store.getters.userData;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ owner: user, id: this.$route.params.id })
+                    body: JSON.stringify({ requestee: user, id: this.$route.params.id })
                 })
                 const json = await response.json();
                 this.pool = json.pool;

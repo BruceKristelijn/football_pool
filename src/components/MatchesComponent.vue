@@ -24,7 +24,7 @@
                         <div v-if="match.status != 'FINISHED'" class="flex flex-row gap-2 items-center">
                             <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
                         </div>
-                        <ScoreBadgeComponent score="30" />
+                        <ScoreBadgeComponent v-if="match.user_score" :score="match.user_score" />
                     </div>
 
 
