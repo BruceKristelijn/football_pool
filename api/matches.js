@@ -1,4 +1,4 @@
-import config from './config.json' assert { type: "json" };
+import config from './config.js';
 import { prisma } from './db.js';
 import { getMatchPrediction, getScore } from './match.js';
 import { validate } from './auth.js';

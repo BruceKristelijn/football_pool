@@ -1,6 +1,4 @@
-import { stringify } from 'postcss';
 import { prisma } from './db.js';
-import config from './config.json' assert { type: "json" };
 import { validate } from './auth.js';
 
 // https://www.football-data.org/documentation/quickstart

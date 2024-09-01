@@ -1,4 +1,4 @@
-{
+const config = {
     "api_url": "https://api.football-data.org/v4/",
     "team": {
         "id": 675,
@@ -14,4 +14,6 @@
         "type": "LEAGUE",
         "emblem": "https://crests.football-data.org/ED.png"
     }
-}
+};
+
+export default config;
