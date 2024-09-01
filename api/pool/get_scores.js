@@ -1,6 +1,6 @@
 import { prisma } from '../db.js';
 import { validate } from '../auth.js';
-import config from './config.js';
+import config from '../config.js';
 import { getScore } from '../match.js';
 
 export default async function handler(request, response) {
