@@ -8,19 +8,33 @@ import NewPoolView from './views/NewPoolView.vue'
 import JoinPoolView from './views/JoinPoolView.vue'
 import PoolView from './views/PoolView.vue'
 import PredictView from './views/PredictView.vue'
+import AdminView from './views/AdminView.vue'
 
 const routes = [
     { name: "Home", path: '/', component: HomeView },
     { path: '/account', component: AccountView },
     { path: '/predict', component: PredictView },
-    { path: '/login', component: LoginView },
+    { name: "Login", path: '/login', component: LoginView },
     { path: '/match/:id', component: MatchView },
     { path: '/pool/new', component: NewPoolView },
     { path: '/pool/:id', component: PoolView },
     { path: '/pool/:id/join', component: JoinPoolView },
+    { path: '/admin', component: AdminView },
 ]
 
 export const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+// router.beforeEach(async (to, from) => {
+//     if (
+//       // make sure the user is authenticated
+//       !isAuthenticated &&
+//       // ❗️ Avoid an infinite redirect
+//       to.name !== 'Login'
+//     ) {
+//       // redirect the user to the login page
+//       return { name: 'Login' }
+//     }
+//   })
