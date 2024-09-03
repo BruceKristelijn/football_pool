@@ -22,7 +22,7 @@ model User {
 
 model Prediction {
   id                Int      @id @default(autoincrement())
-  matchId           String // Store the match ID as a string or appropriate data type
+  matchId           Int
   user              User     @relation(fields: [userId], references: [id])
   userId            Int
   halftimeScoreHome Int
@@ -30,6 +30,7 @@ model Prediction {
   fulltimeScoreHome Int
   fulltimeScoreAway Int
   createdAt         DateTime @default(now())
+  match             Match    @relation(fields: [matchId], references: [id])
 
   @@unique([matchId, userId])
 }
@@ -44,4 +45,26 @@ model Pool {
   owner       User    @relation("UserOwnedPools", fields: [ownerId], references: [id])
 
   @@index([ownerId])
+}
+
+model Match {
+  id                Int      @id @default(autoincrement())
+  competitionId     Int
+  competitionName   String
+  seasonId          Int
+  matchday          Int
+  stage             String
+  utcDate           DateTime
+  status            String
+  homeTeamId        Int
+  homeTeamName      String
+  awayTeamId        Int
+  awayTeamName      String
+  halftimeScoreHome Int
+  halftimeScoreAway Int
+  fulltimeScoreHome Int
+  fulltimeScoreAway Int
+  createdAt         DateTime @default(now())
+
+  predictions Prediction[]
 }
