@@ -24,12 +24,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/api/teams/:teamId/matches",
+      "destination": "https://api.football-data.org/v4/teams/:teamId/matches"
     }
   ]
 }
