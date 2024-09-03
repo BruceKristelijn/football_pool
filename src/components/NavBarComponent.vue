@@ -127,11 +127,11 @@
                 await this.getUserPools();
             }
 
-            self.unSubscribe = this.$store.subscribe(self.onStoreMutation);
+            this.unSubscribe = this.$store.subscribe(this.onStoreMutation);
         },
         beforeDestroy() {
-            if(self.unSubscribe)
-                self.unSubscribe(); 
+            if(this.unSubscribe)
+                this.unSubscribe(); 
         }
     }
 </script>
