@@ -48,23 +48,43 @@ model Pool {
 }
 
 model Match {
-  id                Int      @id @default(autoincrement())
-  competitionId     Int
-  competitionName   String
-  seasonId          Int
-  matchday          Int
-  stage             String
-  utcDate           DateTime
-  status            String
-  homeTeamId        Int
-  homeTeamName      String
-  awayTeamId        Int
-  awayTeamName      String
-  halftimeScoreHome Int
-  halftimeScoreAway Int
-  fulltimeScoreHome Int
-  fulltimeScoreAway Int
-  createdAt         DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  externalId      Int      @unique // The external match ID (e.g., from an API)
+  utcDate         DateTime
+  status          String
+  matchday        Int
+  stage           String
+  group           String?
+  lastUpdated     DateTime
+  homeTeamId      Int
+  homeTeamName    String
+  homeTeamShort   String
+  homeTeamCrest   String
+  awayTeamId      Int
+  awayTeamName    String
+  awayTeamShort   String
+  awayTeamCrest   String
+  fullTimeHome    Int?
+  fullTimeAway    Int?
+  halfTimeHome    Int?
+  halfTimeAway    Int?
+  areaId          Int
+  areaName        String
+  areaCode        String
+  areaFlag        String
+  competitionId   Int
+  competitionName String
+  competitionCode String
+  competitionType String
+  competitionEmblem String
+  seasonId        Int
+  seasonStartDate DateTime
+  seasonEndDate   DateTime
+  currentMatchday Int?
+  seasonWinner    String?
+  referees        Json
+  createdAt       DateTime @default(now())
 
-  predictions Prediction[]
+  predictions     Prediction[]
 }
+

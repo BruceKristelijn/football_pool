@@ -6,38 +6,155 @@ import { validate } from './auth.js';
 // https://www.football-data.org/documentation/quickstart
 
 export default async function handler(request, response) {
+    if (request.method === 'POST') {
+        return getMatches(request, response);
+    }
+    if (request.method === 'PUT') {
+        console.log(config.admins)
+        return putMatches(request, response);
+    }
+}
+
+/// Gets all matches
+async function getMatches(request, response) {
     const body = request.body;
     const { user } = body;
 
     const validationPayload = await validate(user.credential);
-    if(validationPayload === false) {
+    if (validationPayload === false) {
         return response.status(401).json({ error: 'Invalid token' });
     }
-    
+
     const db_user = await prisma.user.findUnique({
         where: {
             google_id: validationPayload.sub
         }
     });
+
+    const matches = await prisma.match.findMany({
+        orderBy: {
+            utcDate: 'asc'
+        }
+    });
     
-    const res = await fetch(`${config.api_url}/teams/${config.team.id}/matches`, {
-        headers: {
-            'X-Auth-Token': process.env.FOOTBALL_API_KEY
+    for (let i = 0; i < matches.length; i++) {
+        const prediction = await getMatchPrediction(matches[i].id, db_user.id);
+        const score = await getScore(matches[i], prediction);
+
+        if (prediction) {
+            matches[i].prediction = prediction;
+        }
+
+        if (score) {
+            matches[i].user_score = score;
+        }
+    }
+    return response.status(200).json(matches);
+}
+
+/// Updates all matches
+async function putMatches(request, response) {
+    const body = request.body;
+    const { user } = body;
+
+    const validationPayload = await validate(user.credential);
+    if (validationPayload === false) {
+        return response.status(401).json({ error: 'Invalid token' });
+    }
+
+    const db_user = await prisma.user.findUnique({
+        where: {
+            google_id: validationPayload.sub
         }
     });
 
-    const data = await res.json();
-    for (let i = 0; i < data.matches.length; i++) {
-        const prediction = await getMatchPrediction(data.matches[i].id, db_user.id);
-        const score = await getScore(data.matches[i], db_user.id);
-        
-        if (prediction) {
-            data.matches[i].prediction = prediction;
-        }
-        
-        if (score) {
-            data.matches[i].user_score = score;
-        }
+    if (!db_user)
+        return response.status(401).json({ error: 'Unauthorized' });
+
+    if (!config.admins.includes(validationPayload.email)) {
+        return response.status(401).json({ error: 'Unauthorized' });
     }
-    return response.status(200).json(data);
+
+    const { matches } = body;
+
+    for (let i = 0; i < matches.length; i++) {
+        const match = matches[i];
+
+        await prisma.match.upsert({
+            where: { externalId: match.id },  // Assuming `match.id` is the unique external ID
+            update: {
+                utcDate: new Date(match.utcDate),
+                status: match.status,
+                matchday: match.matchday,
+                stage: match.stage,
+                group: match.group,
+                lastUpdated: new Date(match.lastUpdated),
+                homeTeamId: match.homeTeam.id,
+                homeTeamName: match.homeTeam.name,
+                homeTeamShort: match.homeTeam.tla,
+                homeTeamCrest: match.homeTeam.crest,
+                awayTeamId: match.awayTeam.id,
+                awayTeamName: match.awayTeam.name,
+                awayTeamShort: match.awayTeam.tla,
+                awayTeamCrest: match.awayTeam.crest,
+                fullTimeHome: match.score.fullTime.home,
+                fullTimeAway: match.score.fullTime.away,
+                halfTimeHome: match.score.halfTime.home,
+                halfTimeAway: match.score.halfTime.away,
+                areaId: match.area.id,
+                areaName: match.area.name,
+                areaCode: match.area.code,
+                areaFlag: match.area.flag,
+                competitionId: match.competition.id,
+                competitionName: match.competition.name,
+                competitionCode: match.competition.code,
+                competitionType: match.competition.type,
+                competitionEmblem: match.competition.emblem,
+                seasonId: match.season.id,
+                seasonStartDate: new Date(match.season.startDate),
+                seasonEndDate: new Date(match.season.endDate),
+                currentMatchday: match.season.currentMatchday,
+                seasonWinner: match.season.winner,
+                referees: match.referees,  // Assuming match.referees is an array of referees
+            },
+            create: {
+                externalId: match.id,
+                utcDate: new Date(match.utcDate),
+                status: match.status,
+                matchday: match.matchday,
+                stage: match.stage,
+                group: match.group,
+                lastUpdated: new Date(match.lastUpdated),
+                homeTeamId: match.homeTeam.id,
+                homeTeamName: match.homeTeam.name,
+                homeTeamShort: match.homeTeam.tla,
+                homeTeamCrest: match.homeTeam.crest,
+                awayTeamId: match.awayTeam.id,
+                awayTeamName: match.awayTeam.name,
+                awayTeamShort: match.awayTeam.tla,
+                awayTeamCrest: match.awayTeam.crest,
+                fullTimeHome: match.score.fullTime.home,
+                fullTimeAway: match.score.fullTime.away,
+                halfTimeHome: match.score.halfTime.home,
+                halfTimeAway: match.score.halfTime.away,
+                areaId: match.area.id,
+                areaName: match.area.name,
+                areaCode: match.area.code,
+                areaFlag: match.area.flag,
+                competitionId: match.competition.id,
+                competitionName: match.competition.name,
+                competitionCode: match.competition.code,
+                competitionType: match.competition.type,
+                competitionEmblem: match.competition.emblem,
+                seasonId: match.season.id,
+                seasonStartDate: new Date(match.season.startDate),
+                seasonEndDate: new Date(match.season.endDate),
+                currentMatchday: match.season.currentMatchday,
+                seasonWinner: match.season.winner,
+                referees: match.referees,  // Assuming match.referees is an array of referees
+            },
+        });
+    }
+
+    return response.status(200).json({ message: 'Matches updated' });
 }

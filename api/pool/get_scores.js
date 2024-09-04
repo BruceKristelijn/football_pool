@@ -1,6 +1,5 @@
 import { prisma } from '../db.js';
 import { validate } from '../auth.js';
-import config from '../config.js';
 import { getScore } from '../match.js';
 
 export default async function handler(request, response) {
@@ -9,63 +8,65 @@ export default async function handler(request, response) {
     const pool_id = Number.parseInt(id);
     const validationPayload = await validate(requestee.credential);
 
-    if (validationPayload === false) {
+    if (!validationPayload) {
         return response.status(401).json({ error: 'Invalid token' });
     }
 
     const user = await prisma.user.findUnique({
         where: {
-            google_id: validationPayload.sub
-        }
+            google_id: validationPayload.sub,
+        },
     });
+
+    if (!user) {
+        return response.status(404).json({ error: 'User not found' });
+    }
 
     const pool = await prisma.pool.findFirst({
         where: {
-            id: pool_id
+            id: pool_id,
         },
         include: {
             users: {
                 select: {
                     id: true,
                     display_name: true,
-                    image_url: true
-                    // Add any other fields you want to include
-                }
-            }
-        }
+                    image_url: true,
+                    predictions: {
+                        include: {
+                            match: true,
+                        },
+                    },
+                },
+            },
+        },
     });
 
-    // Check if user is in the pool
-    let userInPool = false;
-    for (let i = 0; i < pool.users.length; i++) {
-        if (pool.users[i].id === user.id) {
-            userInPool = true;
-            break;
-        }
+    if (!pool) {
+        return response.status(404).json({ error: 'Pool not found' });
     }
+
+    // Check if the user is in the pool
+    const userInPool = pool.users.some((poolUser) => poolUser.id === user.id);
 
     if (!userInPool) {
         return response.status(401).json({ error: 'User not in pool' });
     }
 
-    // Get all matches and predictions for the pool
-    const res = await fetch(`${config.api_url}/teams/${config.team.id}/matches`, {
-        headers: {
-            'X-Auth-Token': process.env.FOOTBALL_API_KEY
-        }
+    // Calculate the score for each user in the pool based on their predictions
+    pool.users.forEach((poolUser) => {
+        poolUser.score = poolUser.predictions.reduce((totalScore, prediction) => {
+            const match = prediction.match;
+
+            // Add logic to calculate score based on match and prediction data
+            //console.log(match, prediction);
+            const matchScore = getScore(match, prediction);
+            console.log(matchScore);
+
+            return totalScore + matchScore;
+        }, 0);
+        
     });
 
-    const data = await res.json();
-    for (let i = 0; i < data.matches.length; i++) {
-        for (let j = 0; j < pool.users.length; j++) {
-            const score = await getScore(data.matches[i], pool.users[j].id);
-            if(!pool.users[j].score)
-                pool.users[j].score = 0;
-
-            pool.users[j].score += score;
-        }
-    }
-
-    return response.status(200).json({ pool: pool });
-
+    return response.status(200).json({ pool });
 }

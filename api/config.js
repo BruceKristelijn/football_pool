@@ -13,7 +13,9 @@ const config = {
         "code": "DED",
         "type": "LEAGUE",
         "emblem": "https://crests.football-data.org/ED.png"
-    }
+    },
+    "admins": process.env.ADMIN_EMAILS.split(','),
+
 };
 
 export default config;

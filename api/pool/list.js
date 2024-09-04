@@ -16,26 +16,31 @@ export default async function handler(request, response) {
         }
     });
 
-    const pools = await prisma.pool.findMany({
-        where: {
-            users: {
-                some: {
-                    id: user.id
+    try {
+        const pools = await prisma.pool.findMany({
+            where: {
+                users: {
+                    some: {
+                        id: user.id
+                    }
+                }
+            },
+            include: {
+                users: {
+                    select: {
+                        id: true,
+                        display_name: true,
+                        image_url: true
+                        // Add any other fields you want to include
+                    }
                 }
             }
-        },
-        include: {
-            users: {
-                select: {
-                    id: true,
-                    display_name: true,
-                    image_url: true
-                    // Add any other fields you want to include
-                }
-            }
-        }
-    });
+        });
 
-    return response.status(200).json({ pools: pools });
+        return response.status(200).json({ pools: pools });
+    } catch (error) {
+        console.error(error);
+        return response.status(200).json([]);
+    }
 
 }

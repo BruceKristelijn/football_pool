@@ -24,12 +24,12 @@ export default async function handler(request, response) {
         return response.status(404).json({ error: 'User not found' });
     }
 
-    const match_id = request.query.id;
+    const match_id = Number.parseInt(request.query.id);
 
     const prediction = await prisma.prediction.upsert({
         where: {
             matchId_userId: {
-                matchId: "" + (match_id),
+                matchId: match_id,
                 userId: db_user.id
             }
         },
@@ -45,7 +45,7 @@ export default async function handler(request, response) {
             fulltimeScoreHome: new_prediction.final.home || 0,
             fulltimeScoreAway: new_prediction.final.away || 0,
             userId: db_user.id,
-            matchId: "" + (match_id)
+            matchId: match_id
         },
     })
 

@@ -17,17 +17,18 @@
                     <!-- Competition  -->
                     <div class="flex flex-row gap-2 justify-center items-center">
                         <!-- <img :src="match.area.flag" alt="Competition logo" class="w-10 h-10" /> -->
-                        <img :src="match.competition.emblem" alt="Competition logo" class="w-10 h-10" />
+                        <img :src="match.competitionEmblem" alt="Competition logo" class="w-10 h-10" />
 
                         <h2 class="card-title">
-                            {{ match.competition.name }}
+                            {{ match.competitionName }}
                         </h2>
                     </div>
 
                     <!-- Location card -->
                     <div class="badge badge-primary">
                         <p class="font-sm">
-                            {{ match.venue }}
+                            <!-- {{ match.venue }} -->
+                            TODO: Add venue support
                         </p>
                     </div>
 
@@ -43,13 +44,13 @@
                     <!-- Crests & Scorecards -->
                     <div class="card-body justify-center badge">
                         <div class="flex flex-row gap-2 justify-center">
-                            <img :src="match.homeTeam.crest" alt="Home team logo" class="w-10 h-10" />
+                            <img :src="match.homeTeamCrest" alt="Home team logo" class="w-10 h-10" />
                             <h3 v-if="match_state == 0">VS</h3>
                             <div v-else>
-                                <h5>{{ match.score.halfTime.home }} - {{ match.score.halfTime.away }}</h5>
-                                <h3>{{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}</h3>
+                                <h5>{{ match.halfTimeHome }} - {{ match.halfTimeAway }}</h5>
+                                <h3>{{ match.fullTimeHome }} - {{ match.fullTimeAway }}</h3>
                             </div>
-                            <img :src="match.awayTeam.crest" alt="Away team logo" class="w-10 h-10" />
+                            <img :src="match.awayTeamCrest" alt="Away team logo" class="w-10 h-10" />
                         </div>
                     </div>
 
@@ -133,8 +134,7 @@
                             <!-- Score card -->
                             <div v-else>
                                 Prediction score: <br>
-                                <ScoreBadgeComponent score="30" />
-                                <ScoreBadgeComponent score="-30" />
+                                <ScoreBadgeComponent :score="match.user_score" />
                             </div>
 
                         </div>
@@ -157,6 +157,7 @@
         },
         data() {
             return {
+                match: undefined,
                 loading: true,
                 time_left: "",
                 match_state: 0, // 0 = planned, 1 = live, 2 = finished
@@ -253,16 +254,17 @@
         async created() {
             await this.fetchData()
 
-            this.prediction = {
-                halftime: {
-                    home: this.match.prediction.halftimeScoreHome,
-                    away: this.match.prediction.halftimeScoreAway
-                },
-                final: {
-                    home: this.match.prediction.fulltimeScoreHome,
-                    away: this.match.prediction.fulltimeScoreAway
+            if (this.match.prediction != undefined)
+                this.prediction = {
+                    halftime: {
+                        home: this.match.prediction.halftimeScoreHome,
+                        away: this.match.prediction.halftimeScoreAway
+                    },
+                    final: {
+                        home: this.match.prediction.fulltimeScoreHome,
+                        away: this.match.prediction.fulltimeScoreAway
+                    }
                 }
-            }
 
             // Find state
             this.match_state = this.match.status == "FINISHED" ? 2 : this.match.status == "LIVE" ? 1 : 0;

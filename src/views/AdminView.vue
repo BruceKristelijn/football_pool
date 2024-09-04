@@ -55,15 +55,19 @@
                     }
                 });
                 const data = await matches_res.json();
+                console.log(data);
                 
                 // Save the matches to the database using API
                 const save_matches_res = await fetch(`${window.origin}/api/matches`, {
-                    method: 'POST',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({matches: data, user: this.$store.getters.userData})
+                    body: JSON.stringify({matches: data.matches, user: this.$store.getters.userData})
                 });
+
+                const json = await save_matches_res.json();
+                console.log(json);
 
                 this.isLoadingMatches = false;
             },
