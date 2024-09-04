@@ -34,16 +34,30 @@ async function getMatches(request, response) {
     const matches = await prisma.match.findMany({
         orderBy: {
             utcDate: 'asc'
+        },
+        include: {
+            predictions: {
+                where: {
+                    userId: db_user.id
+                },
+                select: {
+                    id: true,
+                    halftimeScoreHome: true,
+                    halftimeScoreAway: true,
+                    fulltimeScoreHome: true,
+                    fulltimeScoreAway: true,
+                    createdAt: true
+                }
+            }
         }
     });
 
     for (let i = 0; i < matches.length; i++) {
-        const prediction = await getMatchPrediction(matches[i].id, db_user.id);
-        const score = await getScore(matches[i], prediction);
+        if (matches[i].predictions.length === 0)
+            continue;
 
-        if (prediction) {
-            matches[i].prediction = prediction;
-        }
+        const score = await getScore(matches[i], matches[i].predictions[0]);
+        matches[i].prediction = matches[i].predictions[0];
 
         if (score) {
             matches[i].user_score = score;
@@ -174,6 +188,4 @@ async function putMatches(request, response) {
         console.error(error);
         return response.status(500).json({ error: 'An error occurred while upserting matches' });
     }
-
-    return response.status(200).json({ message: 'Matches updated' });
 }
