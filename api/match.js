@@ -69,6 +69,10 @@ async function getMatch(request, response) {
         }
     });
 
+    if(db_user === undefined) {
+        return response.status(404).json({ error: 'User not found' });
+    }
+
     const id = request.query.id;
     const match = await prisma.match.findFirst({
         where: {
