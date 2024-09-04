@@ -36,7 +36,7 @@
                     body: JSON.stringify({ user: user })
                 });
                 const data = await response.json()
-                this.matches = data.matches.reverse();
+                this.matches = data.reverse();
                 this.loading = false;
             }
         },
