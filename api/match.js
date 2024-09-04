@@ -80,6 +80,10 @@ async function getMatch(request, response) {
         }
     });
 
+    if (!match) {
+        return response.status(404).json({ error: 'Match not found' });
+    }
+
     const data = match;
     const prediction = await getMatchPrediction(data.id, db_user.id);
     if (prediction) {
