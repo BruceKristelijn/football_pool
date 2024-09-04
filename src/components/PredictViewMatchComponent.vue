@@ -5,11 +5,11 @@
             <div class="flex-1">
                 <div class="flex flex-row w-1/3">
                     <div class="w-1/4">
-                        <img :src="match.homeTeam.crest" alt="home team crest" class="w-5 h-5">
+                        <img :src="match.homeTeamCrest" alt="home team crest" class="w-5 h-5">
                     </div>
 
                     <div class="w-1/4">
-                        <img :src="match.awayTeam.crest" alt="away team crest" class="w-5 h-5">
+                        <img :src="match.awayTeamCrest" alt="away team crest" class="w-5 h-5">
                     </div>
 
                     <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
@@ -19,7 +19,7 @@
             <!-- Final Score display -->
             <div v-if="match_state == 2" class="flex-none badge p-2">
                 <p class="text-sm">
-                    {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
+                    {{ match.fullTimeHome }} - {{ match.fullTimeAway}}
                 </p>
             </div>
 

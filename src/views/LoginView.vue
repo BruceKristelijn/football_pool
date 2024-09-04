@@ -88,8 +88,18 @@ export default {
                 console.log(this.$store.getters.userData)
             })
 
+            // Get redirect from path
+            const redirect = this.$route.query.redirect
+
+            if(redirect) {
+                this.$router.push({path: redirect})
+            } else {
             this.$router.push({name:'Home'}); 
+            }
         }
+    },
+    created() {
+        this.$store.commit("setUserData", undefined);
     }
 }
 </script>

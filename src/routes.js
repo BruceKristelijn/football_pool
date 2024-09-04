@@ -1,4 +1,5 @@
 import { createMemoryHistory, createWebHistory, createRouter } from 'vue-router'
+import { validateAuth } from './auth'
 
 import HomeView from './views/HomeView.vue'
 import AccountView from './views/AccountView.vue'
@@ -27,14 +28,15 @@ export const router = createRouter({
     routes,
 })
 
-// router.beforeEach(async (to, from) => {
-//     if (
-//       // make sure the user is authenticated
-//       !isAuthenticated &&
-//       // ❗️ Avoid an infinite redirect
-//       to.name !== 'Login'
-//     ) {
-//       // redirect the user to the login page
-//       return { name: 'Login' }
-//     }
-//   })
+router.beforeEach(async (to, from) => {
+    const isAuthenticated = await validateAuth()
+    if (
+        // make sure the user is authenticated
+        !isAuthenticated &&
+        // ❗️ Avoid an infinite redirect
+        to.name !== 'Login'
+    ) {
+        // redirect the user to the login page with the original URL as a parameter
+        return { name: 'Login', query: { redirect: to.fullPath } }
+    }
+})
