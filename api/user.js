@@ -28,7 +28,7 @@ export default async function handler(request, response) {
         create: {
             display_name: validationPayload.name,
             google_id: validationPayload.sub,
-            image_url: validationPayload.picture  
+            image_url: validationPayload.picture ?? ""  
         },
       })
 
