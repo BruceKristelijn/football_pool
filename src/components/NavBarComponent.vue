@@ -31,6 +31,13 @@
                         </RouterLink>
                     </li>
 
+                    <li>
+                        <RouterLink v-if="$store.getters.isAdmin" to="/admin">
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            Update matches
+                        </RouterLink>
+                    </li>
+
                     <li class="mt-3 pointer-events-none">
                         <b>Mijn poules:</b>
                     </li>
@@ -130,8 +137,8 @@
             this.unSubscribe = this.$store.subscribe(this.onStoreMutation);
         },
         beforeDestroy() {
-            if(this.unSubscribe)
-                this.unSubscribe(); 
+            if (this.unSubscribe)
+                this.unSubscribe();
         }
     }
 </script>

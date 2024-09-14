@@ -1,4 +1,6 @@
 import { OAuth2Client } from 'google-auth-library'
+import config from './config.js';
+
 const client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET)
 
 // Call this function to validate the JWT credential sent from client-side
@@ -35,10 +37,11 @@ export default async function handler(request, response) {
     const { credential } = body
     try {
       const payload = await validate(credential)
+      const isAdmin = config.admins.includes(payload.email);
       if (!payload) {
         return response.status(401).json({ error: 'Invalid token' })
       }
-      return response.status(200).json({ message: 'Token is valid' })
+      return response.status(200).json({ message: 'Token is valid', isAdmin: isAdmin })
     } catch (error) {
       console.error('Error validating token:', error)
       return response.status(500).json({ error: 'Internal server error' })

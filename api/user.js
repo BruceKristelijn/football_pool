@@ -1,5 +1,6 @@
 import { prisma } from './db.js';
 import { validate } from './auth.js';
+import config from './config.js';
 
 async function createListing(client, newListing) {
     const { rows } = await sql`SELECT * from CARTS`;
@@ -36,8 +37,6 @@ export default async function handler(request, response) {
             google_id: validationPayload.sub,
         },
     });
-
-    console.log('userResp', userResp);
-
+    
     return response.status(200).json(JSON.stringify({payload : validationPayload, user : user}));
 }

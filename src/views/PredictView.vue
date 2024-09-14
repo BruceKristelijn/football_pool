@@ -1,6 +1,10 @@
 <template>
     <transition name="fade">
-        <div v-if="loading" class="w-1/2">
+        <div v-if="loading">
+            <div class="skeleton h-10 w-full mb-5"></div>
+            <div class="skeleton h-10 w-full mb-5"></div>
+            <div class="skeleton h-10 w-full mb-5"></div>
+            <div class="skeleton h-10 w-full mb-5"></div>
             <div class="skeleton h-10 w-full mb-5"></div>
             <div class="skeleton h-10 w-full mb-5"></div>
             <div class="skeleton h-10 w-full"></div>

@@ -26,8 +26,12 @@ export async function validateAuth() {
     })
     const response = await resp.json();
     console.log(response);
+    
     if (response.error)
         return false;
+
+    if(response.isAdmin)
+        store.commit('setIsAdmin', response.isAdmin);
 
     return true;
 }

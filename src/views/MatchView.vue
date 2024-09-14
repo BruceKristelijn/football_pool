@@ -1,15 +1,13 @@
 <template>
     <div class="flex flex-col">
-        <div class="card bg-base-100 w-3/4 shadow-xl self-center">
+        <div class="card bg-base-100 shadow-xl self-center">
 
-            <transition name="fade">
-                <div v-if="loading" class="card-body justify-center items-center" :class="{nomargin: loading}">
+            <transition name="fade" v-if="loading" class="card-body justify-center items-center" :class="{nomargin: !loading}">
                     <div class="flex flex-col gap-2 w-80 m-10">
                         <div class="skeleton h-32 w-full"></div>
                         <div class="skeleton h-4 w-full"></div>
                         <div class="skeleton h-4 w-full"></div>
                     </div>
-                </div>
             </transition>
 
             <transition name="fade">
@@ -55,7 +53,7 @@
                     </div>
 
                     <!-- Prediction card -->
-                    <div class="card bg-base-200 w-3/4 shadow-xl text-center mt-5">
+                    <div class="card bg-base-200 shadow-xl text-center mt-5">
                         <div class="card-body my-0">
                             <h1>Voorspelling</h1>
                             <h2>Stand bij rust</h2>
@@ -281,7 +279,9 @@
 </script>
 
 <style scoped>
-    .nomargin {}
+    .nomargin {
+        margin-bottom: -2000px;
+    }
 
     .list-move,
     /* apply transition to moving elements */
