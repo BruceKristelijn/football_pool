@@ -2,38 +2,38 @@
     <div class="collapse collapse-arrow bg-base-200">
         <input type="radio" name="my-accordion-2" />
         <div class="collapse-title text-xl font-medium flex flex-row">
-            <div class="flex-1">
-                <div class="flex flex-row w-1/3">
-                    <div class="w-1/4">
-                        <img :src="match.homeTeamCrest" alt="home team crest" class="w-5 h-5">
-                    </div>
+            <div class="w-1/2 flex flex-row">
+                <div class="w-1/4">
+                    <img :src="match.homeTeamCrest" alt="home team crest" class="w-5 h-5">
+                </div>
 
-                    <div class="w-1/4">
-                        <img :src="match.awayTeamCrest" alt="away team crest" class="w-5 h-5">
-                    </div>
+                <div class="w-1/4">
+                    <img :src="match.awayTeamCrest" alt="away team crest" class="w-5 h-5">
+                </div>
 
-                    <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
+                <p class="text-sm">{{ formatDate(match.utcDate) }}</p>
+            </div>
+
+            <div class="w-1/4 flex flex-row justify-end align-middle" style="align-items: center; gap: 5px;">
+                <!-- Final Score display -->
+                <div v-if="match_state == 2" class="flex-none badge p-2">
+                    <p class="text-sm">
+                        {{ match.fullTimeHome }} - {{ match.fullTimeAway}}
+                    </p>
                 </div>
             </div>
+            <div class="w-1/4 flex flex-row justify-end align-middle" style="align-items: center; gap: 5px;">
 
-            <!-- Final Score display -->
-            <div v-if="match_state == 2" class="flex-none badge p-2">
-                <p class="text-sm">
-                    {{ match.fullTimeHome }} - {{ match.fullTimeAway}}
-                </p>
+                <!-- Points earned display -->
+                <ScoreBadgeComponent v-if="match_state == 2" :score="match.user_score || 0" />
+
+                <!-- <div class="flex-none">1 - 0</div> -->
+                <font-awesome-icon v-if="match.prediction == null && match.status == 'TIMED'"
+                    style="color:var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));" class="mt-1 text-xs"
+                    :icon="['fas', 'exclamation']" />
             </div>
-
-            <!-- Points earned display -->
-            <div v-if="match_state == 2" class="flex-none">
-                <ScoreBadgeComponent :score="match.user_score || 0" />
-            </div>
-
-            <!-- <div class="flex-none">1 - 0</div> -->
-            <font-awesome-icon v-if="match.prediction == null && match.status == 'TIMED'"
-                style="color:var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));" class="mt-1"
-                :icon="['fas', 'exclamation']" />
         </div>
-        <div class="collapse-content">
+        <div class="collapse-content text-center">
 
             <!-- Form error display -->
             <TransitionGroup name="list" tag="div">
@@ -55,29 +55,31 @@
 
                 <label class="form-control flex flex-col w-full max-w-xs ">
                     Home
-                    <input type="number" placeholder="" class="input input-bordered w-full my-1"
+                    <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.halftime.home" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
                 <label class="form-control flex flex-col w-full max-w-xs">Away
-                    <input type="number" placeholder="" class="input input-bordered w-full my-1"
+                    <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.halftime.away" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
             </div>
 
-            <h2 class="text-center"><b>Eindstand</b></h2>
+            <h2 class="text-center">
+                <b>Eindstand</b>            
+            </h2>
             <div class="gap-2 justify-center flex flex-row items-center mx-10">
 
                 <label class="form-control flex flex-col w-full max-w-xs">
                     Home
-                    <input type="number" placeholder="" class="input input-bordered w-full my-1"
+                    <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.final.home" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
                 <label class="form-control flex flex-col w-full max-w-xs">
                     Away
-                    <input type="number" placeholder="" class="input input-bordered w-full my-1"
+                    <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.final.away" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
@@ -85,22 +87,18 @@
 
 
             <!-- Submit button -->
-            <button class="btn btn-primary block mt-10 mx-auto" :disabled="isMatchPredictionLoading || predictionFormErrors.length > 0"
-                @click="saveMatchPrediction" v-if="match_state == 0">
+            <button class="btn btn-primary block mt-10 mx-auto"
+                :disabled="isMatchPredictionLoading || predictionFormErrors.length > 0" @click="saveMatchPrediction"
+                v-if="match_state == 0">
                 Save
                 <span class="loading loading-spinner loading-md" v-if="isMatchPredictionLoading"></span>
             </button>
-
-            <!-- Score card -->
-            <div v-else>
-                Prediction score: <br>
-            </div>
         </div>
     </div>
 </template>
 
 <script>
-     import ScoreBadgeComponent from './ScoreBadgeComponent.vue';
+    import ScoreBadgeComponent from './ScoreBadgeComponent.vue';
 
     export default {
         components: {

@@ -1,6 +1,6 @@
 <template>
-    <div class="badge p-4" :class="class">
-        <p class="font-bold text-lg text-base-100 inline-flex">
+    <div class="badge" :class="class">
+        <p class="font-bold text-sm text-base-100 inline-flex p-0">
             <span v-if="score > 0">+</span>
             <span v-else>-</span>
             {{ Math.abs(score) }}

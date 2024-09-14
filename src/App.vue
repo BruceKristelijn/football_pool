@@ -11,8 +11,8 @@ export default {
 <template>
   <div class="bg-gray-50 absolute inset-y-0 inset-x-0">
     <NavBarComponent v-if="$store.getters.userData != undefined" />
-    <main class="flex justify-center my-5">
-      <RouterView class="w-3/4" />
+    <main class="justify-center my-5 px-3">
+      <RouterView class="" />
     </main>
   </div>
 </template>
