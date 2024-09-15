@@ -29,5 +29,5 @@ export const store = createStore({
             return state.isAdmin
         }
     },
-    //plugins: [vuexLocal.plugin]
+    plugins: [vuexLocal.plugin]
 })

@@ -74,7 +74,7 @@
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Tailwind CSS Navbar component" :src="userData.user.user.image_url" />
+                        <img v-if="userData.user && userData.user.user" alt="Tailwind CSS Navbar component" :src="userData.user.user.image_url" />
                     </div>
                 </div>
                 <ul tabindex="0"

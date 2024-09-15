@@ -10,6 +10,7 @@ import JoinPoolView from './views/JoinPoolView.vue'
 import PoolView from './views/PoolView.vue'
 import PredictView from './views/PredictView.vue'
 import AdminView from './views/AdminView.vue'
+import Vuex from 'vuex'
 
 const routes = [
     { name: "Home", path: '/', component: HomeView },
@@ -29,14 +30,19 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
+    console.log('Navigating to', to.name)
+    if (to.name === 'Login') {
+        return
+    }
+
     const isAuthenticated = await validateAuth()
-    if (
-        // make sure the user is authenticated
-        !isAuthenticated &&
-        // ❗️ Avoid an infinite redirect
-        to.name !== 'Login'
-    ) {
-        // redirect the user to the login page with the original URL as a parameter
-        return { name: 'Login', query: { redirect: to.fullPath } }
+    console.log('isAuthenticated', isAuthenticated)
+    if (!isAuthenticated) {
+        console.log('Redirecting to login')
+        if (to.fullPath === '/') {
+            return { name: 'Login' }
+        } else {
+           return { name: 'Login', query: { redirect: to.fullPath } }
+        }
     }
 })

@@ -4,6 +4,7 @@ import { validate } from '../auth.js';
 export default async function handler(request, response) {
     const body = request.body;
     const { name, inviteOnly, owner } = body;
+    
     const validationPayload = await validate(owner.credential);
 
     if (validationPayload === false) {
