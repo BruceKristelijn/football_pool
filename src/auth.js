@@ -27,6 +27,12 @@ export async function validateAuth() {
             },
             body: JSON.stringify({ credential }),
         })
+
+        if (resp.status === 401) {
+            console.log('Unauthorized');
+            return false;
+        }
+        
         const response = await resp.json();
 
         if (response.isAdmin)

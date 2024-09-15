@@ -38,7 +38,7 @@ export default async function handler(request, response) {
     try {
       const payload = await validate(credential)
       const isAdmin = config.admins.includes(payload.email);
-      if (!payload) {
+      if (!payload || payload === false) {
         return response.status(401).json({ error: 'Invalid token' })
       }
       return response.status(200).json({ message: 'Token is valid', isAdmin: isAdmin })
