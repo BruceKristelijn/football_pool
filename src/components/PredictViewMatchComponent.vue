@@ -118,7 +118,7 @@
                     }
                 }
             }
-            this.match_state = this.match.status == "FINISHED" ? 2 : this.match.status == "LIVE" ? 1 : 0;
+            this.match_state = this.match.status == "FINISHED" ? 2 : this.match.status == "IN_PLAY" ? 1 : 0;
         },
         methods: {
             formatDate(utcDate) {

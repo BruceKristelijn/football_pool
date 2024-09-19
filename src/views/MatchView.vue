@@ -158,7 +158,7 @@
                 match: undefined,
                 loading: true,
                 time_left: "",
-                match_state: 0, // 0 = planned, 1 = live, 2 = finished
+                match_state: 0, // 0 = planned, 1 = IN_PLAY, 2 = finished
                 isMatchPredictionLoading: false,
                 predictionFormErrors: [],
                 showPredictionFormSuccess: false,
@@ -265,7 +265,7 @@
                 }
 
             // Find state
-            this.match_state = this.match.status == "FINISHED" ? 2 : this.match.status == "LIVE" ? 1 : 0;
+            this.match_state = this.match.status == "FINISHED" ? 2 : this.match.status == "IN_PLAY" ? 1 : 0;
 
             // Setup time left countdown
             this.time_left = this.get_time_left()
