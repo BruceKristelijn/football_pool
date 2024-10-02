@@ -25,7 +25,7 @@
             <div class="w-1/4 flex flex-row justify-end align-middle" style="align-items: center; gap: 5px;">
 
                 <!-- Points earned display -->
-                <ScoreBadgeComponent v-if="match_state == 2" :score="match.user_score || 0" />
+                <ScoreBadgeComponent v-if="match_state == 2" :score="match.user_score.score || 0" />
 
                 <!-- <div class="flex-none">1 - 0</div> -->
                 <font-awesome-icon v-if="match.prediction == null && match.status == 'TIMED'"

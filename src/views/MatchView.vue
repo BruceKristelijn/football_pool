@@ -96,7 +96,10 @@
                                         v-model="prediction.halftime.home" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
                                 </label>
-                                <span class="w-1/2">-</span>
+                                <label class="form-control flex flex-col w-full max-w-xs text-center" style="align-items: center;">
+                                    <ScoreBadgeComponent :score="match.user_score.explainer.firstHalf" />
+                                    <span class="w-1/2">-</span>
+                                </label>
                                 <label class="form-control flex flex-col w-full max-w-xs">Away
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
                                         v-model="prediction.halftime.away" @change="validateMatchPrediction"
@@ -113,7 +116,11 @@
                                         v-model="prediction.final.home" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
                                 </label>
-                                <span class="w-1/2">-</span>
+                                <label class="form-control flex flex-col w-full max-w-xs text-center" style="align-items: center;">
+                                    <ScoreBadgeComponent :score="match.user_score.explainer.secondHalf" />
+                                    <span class="w-1/2">-</span>
+                                </label>
+                               
                                 <label class="form-control flex flex-col w-full max-w-xs">
                                     Away
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
@@ -132,7 +139,10 @@
                             <!-- Score card -->
                             <div v-else>
                                 Prediction score: <br>
-                                <ScoreBadgeComponent :score="match.user_score" />
+                                <button v-if="match.user_score.explainer.multiplier < 1" class="btn btn-danger btn-sx mr-2" :disabled="true">
+                                    x{{match.user_score.explainer.multiplier}}
+                                </button>
+                                <ScoreBadgeComponent :score="match.user_score.score" />
                             </div>
 
                         </div>

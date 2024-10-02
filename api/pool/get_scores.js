@@ -60,7 +60,7 @@ export default async function handler(request, response) {
 
             // Add logic to calculate score based on match and prediction data
             //console.log(match, prediction);
-            const matchScore = getScore(match, prediction);
+            const matchScore = getScore(match, prediction).score;
             console.log(matchScore);
 
             return totalScore + matchScore;

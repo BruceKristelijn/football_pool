@@ -28,7 +28,7 @@ export function getScore(match, prediction) {
     let score = 0;
 
     if (!prediction) {
-        return score;
+        return { score, explainer: { firstHalf: 0, secondHalf: 0, multiplier: 1 } };
     }
 
     let halftimeWinnerCorrect = false;
@@ -36,11 +36,19 @@ export function getScore(match, prediction) {
     let halftimeScoreCorrect = 0;
     let fulltimeScoreCorrect = 0;
 
+    // Explanation object to store points breakdown
+    let explainer = {
+        firstHalf: 0,
+        secondHalf: 0,
+        multiplier: 1
+    };
+
     // Determine halftime winner or duel (10 points)
     const halftimeMatchResult = match.halfTimeHome === match.halfTimeAway ? 'draw' : (match.halfTimeHome > match.halfTimeAway ? 'home' : 'away');
     const halftimePredictionResult = prediction.halftimeScoreHome === prediction.halftimeScoreAway ? 'draw' : (prediction.halftimeScoreHome > prediction.halftimeScoreAway ? 'home' : 'away');
     if (halftimeMatchResult === halftimePredictionResult) {
         score += 10;
+        explainer.firstHalf += 10; // Track the points from the first half
         halftimeWinnerCorrect = true;
     }
 
@@ -49,26 +57,31 @@ export function getScore(match, prediction) {
     const fulltimePredictionResult = prediction.fulltimeScoreHome === prediction.fulltimeScoreAway ? 'draw' : (prediction.fulltimeScoreHome > prediction.fulltimeScoreAway ? 'home' : 'away');
     if (fulltimeMatchResult === fulltimePredictionResult) {
         score += 10;
+        explainer.secondHalf += 10; // Track the points from the second half
         fulltimeWinnerCorrect = true;
     }
 
     // Correct halftime scores (7 points per side, max 14)
     if (match.halfTimeHome === prediction.halftimeScoreHome) {
         score += 7;
+        explainer.firstHalf += 7; // Add 7 points to first half if home score is correct
         halftimeScoreCorrect += 7;
     }
     if (match.halfTimeAway === prediction.halftimeScoreAway) {
         score += 7;
+        explainer.firstHalf += 7; // Add 7 points to first half if away score is correct
         halftimeScoreCorrect += 7;
     }
 
     // Correct fulltime scores (7 points per side, max 14)
     if (match.fullTimeHome === prediction.fulltimeScoreHome) {
         score += 7;
+        explainer.secondHalf += 7; // Add 7 points to second half if home score is correct
         fulltimeScoreCorrect += 7;
     }
     if (match.fullTimeAway === prediction.fulltimeScoreAway) {
         score += 7;
+        explainer.secondHalf += 7; // Add 7 points to second half if away score is correct
         fulltimeScoreCorrect += 7;
     }
 
@@ -80,10 +93,12 @@ export function getScore(match, prediction) {
         fulltimeScoreCorrect === 14
     ) {
         score *= 2;
+        explainer.multiplier = 2; // Apply multiplier if all is 100% correct
     }
 
-    return score;
+    return { score, explainer };
 }
+
 
 
 async function getMatch(request, response) {
