@@ -173,6 +173,10 @@
                 })
                 const json = await response.json();
                 this.pool = json.pool;
+
+                // Sort users by score
+                this.pool.users.sort((a, b) => (a.score < b.score) ? 1 : -1);
+
                 this.loading = false;
             },
             openAddPlayerModal() {
