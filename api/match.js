@@ -31,28 +31,60 @@ export function getScore(match, prediction) {
         return score;
     }
 
-    if (match.fullTimeAway === prediction.halftimeScoreAway) {
-        score += 3;
-    }
-    if (match.halfTimeHome === prediction.halftimeScoreHome) {
-        score += 3;
-    }
-    if (match.fullTimeAway === prediction.halftimeScoreAway && match.halfTimeHome === prediction.halftimeScoreHome) {
-        score += 4;
+    let halftimeWinnerCorrect = false;
+    let fulltimeWinnerCorrect = false;
+    let halftimeScoreCorrect = 0;
+    let fulltimeScoreCorrect = 0;
+
+    // Determine halftime winner or duel (10 points)
+    const halftimeMatchResult = match.halfTimeHome === match.halfTimeAway ? 'draw' : (match.halfTimeHome > match.halfTimeAway ? 'home' : 'away');
+    const halftimePredictionResult = prediction.halftimeScoreHome === prediction.halftimeScoreAway ? 'draw' : (prediction.halftimeScoreHome > prediction.halftimeScoreAway ? 'home' : 'away');
+    if (halftimeMatchResult === halftimePredictionResult) {
+        score += 10;
+        halftimeWinnerCorrect = true;
     }
 
-    if (match.fullTimeAway === prediction.fulltimeScoreAway) {
-        score += 3;
+    // Determine fulltime winner or duel (10 points)
+    const fulltimeMatchResult = match.fullTimeHome === match.fullTimeAway ? 'draw' : (match.fullTimeHome > match.fullTimeAway ? 'home' : 'away');
+    const fulltimePredictionResult = prediction.fulltimeScoreHome === prediction.fulltimeScoreAway ? 'draw' : (prediction.fulltimeScoreHome > prediction.fulltimeScoreAway ? 'home' : 'away');
+    if (fulltimeMatchResult === fulltimePredictionResult) {
+        score += 10;
+        fulltimeWinnerCorrect = true;
     }
+
+    // Correct halftime scores (7 points per side, max 14)
+    if (match.halfTimeHome === prediction.halftimeScoreHome) {
+        score += 7;
+        halftimeScoreCorrect += 7;
+    }
+    if (match.halfTimeAway === prediction.halftimeScoreAway) {
+        score += 7;
+        halftimeScoreCorrect += 7;
+    }
+
+    // Correct fulltime scores (7 points per side, max 14)
     if (match.fullTimeHome === prediction.fulltimeScoreHome) {
-        score += 3;
+        score += 7;
+        fulltimeScoreCorrect += 7;
     }
-    if (match.fullTimeAway === prediction.fulltimeScoreAway && match.fullTimeHome === prediction.fulltimeScoreHome) {
-        score += 4;
+    if (match.fullTimeAway === prediction.fulltimeScoreAway) {
+        score += 7;
+        fulltimeScoreCorrect += 7;
+    }
+
+    // Check for perfect prediction (double multiplier if 100% correct)
+    if (
+        halftimeWinnerCorrect &&
+        fulltimeWinnerCorrect &&
+        halftimeScoreCorrect === 14 &&
+        fulltimeScoreCorrect === 14
+    ) {
+        score *= 2;
     }
 
     return score;
 }
+
 
 async function getMatch(request, response) {
     const body = request.body;
