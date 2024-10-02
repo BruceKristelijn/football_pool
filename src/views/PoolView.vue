@@ -175,7 +175,7 @@
                 this.pool = json.pool;
 
                 // Sort users by score
-                this.pool.users.sort((a, b) => (a.score < b.score) ? 1 : -1);
+                this.pool.users.sort((a, b) => (a.score.score < b.score.score) ? 1 : -1);
 
                 this.loading = false;
             },
