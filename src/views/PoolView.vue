@@ -45,30 +45,32 @@
                             <tbody>
                                 <!-- row 1 -->
                                 <tr v-for="user in pool.users">
-                                    <td>
-                                        <div class="avatar">
-                                            <div class="h-12 w-12 rounded-full">
-                                                <img :src="user.image_url" alt="Avatar Tailwind CSS Component" />
+                                    <RouterLink :to="{ pad: '/predict', query: { 'user_id': user.id } }">
+                                        <td>
+                                            <div class="avatar">
+                                                <div class="h-12 w-12 rounded-full">
+                                                    <img :src="user.image_url" alt="Avatar Tailwind CSS Component" />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center gap-3">
-                                            <div>
-                                                <div class="font-bold">{{ user.display_name }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div>
+                                                    <div class="font-bold">{{ user.display_name }}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <ScoreBadgeComponent :score="user.score" />
-                                    </td>
+                                        </td>
+                                        <td>
+                                            <ScoreBadgeComponent :score="user.score" />
+                                        </td>
 
-                                    <td
-                                        v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
-                                        <button class="btn btn-sm" @click="kickPlayer(user)">
-                                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
-                                        </button>
-                                    </td>
+                                        <td
+                                            v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
+                                            <button class="btn btn-sm" @click="kickPlayer(user)">
+                                                <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                                            </button>
+                                        </td>
+                                    </RouterLink>
                                 </tr>
                             </tbody>
                         </table>

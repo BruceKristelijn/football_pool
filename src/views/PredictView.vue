@@ -33,11 +33,18 @@
         methods: {
             async fetchData() {
                 const url = `${window.location.origin}/api/matches`
-                const user = this.$store.getters.userData;
+                const body = {}
+                const user_id = this.$route.query.user_id; // User ID is the ID to look for if we want to inspect other peoples scores.
+                if(user_id){ 
+                    const user = this.$store.getters.userData;
+                    body.user = user;
+                } else {
+                    body.search_user_id = user_id;
+                }
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user: user })
+                    body: JSON.stringify(body)
                 });
                 const data = await response.json()
                 this.matches = data.reverse();
