@@ -45,7 +45,7 @@
                             <tbody>
                                 <!-- row 1 -->
                                 <tr v-for="user in pool.users">
-                                    <RouterLink :to="{ pad: '/predict', query: { 'user_id': user.id } }">
+                                    <RouterLink :to="{ path: '/predict', query: { 'user_id': user.id } }">
                                         <td>
                                             <div class="avatar">
                                                 <div class="h-12 w-12 rounded-full">
