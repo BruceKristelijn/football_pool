@@ -45,32 +45,34 @@
                             <tbody>
                                 <!-- row 1 -->
                                 <tr v-for="user in pool.users">
-                                    <RouterLink :to="{ path: '/predict', query: { 'user_id': user.id } }">
-                                        <td>
-                                            <div class="avatar">
-                                                <div class="h-12 w-12 rounded-full">
+                                    <td>
+                                        <div class="avatar">
+                                            <div class="h-12 w-12 rounded-full">
+                                                <RouterLink :to="{ path: '/predict', query: { 'user_id': user.id } }">
                                                     <img :src="user.image_url" alt="Avatar Tailwind CSS Component" />
-                                                </div>
+                                                </RouterLink>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="flex items-center gap-3">
-                                                <div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div>
+                                                <RouterLink :to="{ path: '/predict', query: { 'user_id': user.id } }">
                                                     <div class="font-bold">{{ user.display_name }}</div>
-                                                </div>
+                                                </RouterLink>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <ScoreBadgeComponent :score="user.score" />
-                                        </td>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ScoreBadgeComponent :score="user.score" />
+                                    </td>
 
-                                        <td
-                                            v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
-                                            <button class="btn btn-sm" @click="kickPlayer(user)">
-                                                <font-awesome-icon :icon="['fas', 'trash-alt']" />
-                                            </button>
-                                        </td>
-                                    </RouterLink>
+                                    <td
+                                        v-if="user.id != pool.ownerId && $store.getters.userData.user.user.id == pool.ownerId">
+                                        <button class="btn btn-sm" @click="kickPlayer(user)">
+                                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -124,7 +126,7 @@
     <!-- Open the modal using ID.showModal() method -->
     <dialog id="remove_player_modal" class="modal">
         <div class="modal-box">
-            <h3 class="text-lg font-bold" v-if="to_remove">Wil je {{to_remove.display_name}} uit de poule verwijderen?
+            <h3 class="text-lg font-bold" v-if="to_remove">Wil je {{ to_remove.display_name }} uit de poule verwijderen?
             </h3>
             <div class="modal-action">
                 <form method="dialog">
@@ -140,125 +142,125 @@
 </template>
 
 <script>
-    import MatchesComponent from '../components/MatchesComponent.vue'
-    import ScoreBadgeComponent from '../components/ScoreBadgeComponent.vue';
+import MatchesComponent from '../components/MatchesComponent.vue'
+import ScoreBadgeComponent from '../components/ScoreBadgeComponent.vue';
 
-    export default {
-        components: {
-            MatchesComponent,
-            ScoreBadgeComponent
-        },
-        data() {
-            return {
-                loading: true,
-                copied: false,
-                pool: null,
-                to_remove: null,
-                pool_invite_url: "http://localhost:3000/pool/0",
-                Pool_just_joined: this.$route.query.joined === 'true'
-            }
-        },
-        computed: {
+export default {
+    components: {
+        MatchesComponent,
+        ScoreBadgeComponent
+    },
+    data() {
+        return {
+            loading: true,
+            copied: false,
+            pool: null,
+            to_remove: null,
+            pool_invite_url: "http://localhost:3000/pool/0",
+            Pool_just_joined: this.$route.query.joined === 'true'
+        }
+    },
+    computed: {
 
+    },
+    methods: {
+        async fetchData() {
+            // Get the pool users
+            const url = window.origin + "/api/pool/get_scores";
+            const user = this.$store.getters.userData;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requestee: user, id: this.$route.params.id })
+            })
+            const json = await response.json();
+            this.pool = json.pool;
+
+            // Sort users by score
+            console.log(this.pool.users)
+            const users = this.pool.users;
+            users.sort();
+            users.reverse();
+            console.log(users)
+            this.pool.users = users;
+            console.log(this.pool.users)
+
+            this.loading = false;
         },
-        methods: {
-            async fetchData() {
-                // Get the pool users
-                const url = window.origin + "/api/pool/get_scores";
+        openAddPlayerModal() {
+            console.log("openAddPlayerModal")
+            addPlayerModal.showModal();
+        },
+        copyPoolInviteUrl() {
+            console.log("copyPoolInviteUrl")
+            navigator.clipboard.writeText(this.pool_invite_url);
+            this.copied = true;
+        },
+        kickPlayer(user) {
+            this.to_remove = user;
+            remove_player_modal.showModal();
+        },
+        async removePlayer() {
+            try {
+                console.log("removePlayer");
+                const url = window.origin + "/api/pool/kick";
                 const user = this.$store.getters.userData;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ requestee: user, id: this.$route.params.id })
-                })
+                    body: JSON.stringify({ owner: user, id: this.$route.params.id, user: this.to_remove })
+                });
                 const json = await response.json();
                 this.pool = json.pool;
-
-                // Sort users by score
-                console.log(this.pool.users)
-                const users = this.pool.users;
-                users.sort();
-                users.reverse();
-                console.log(users)
-                this.pool.users = users;
-                console.log(this.pool.users)
-
-                this.loading = false;
-            },
-            openAddPlayerModal() {
-                console.log("openAddPlayerModal")
-                addPlayerModal.showModal();
-            },
-            copyPoolInviteUrl() {
-                console.log("copyPoolInviteUrl")
-                navigator.clipboard.writeText(this.pool_invite_url);
-                this.copied = true;
-            },
-            kickPlayer(user) {
-                this.to_remove = user;
-                remove_player_modal.showModal();
-            },
-            async removePlayer() {
-                try {
-                    console.log("removePlayer");
-                    const url = window.origin + "/api/pool/kick";
-                    const user = this.$store.getters.userData;
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ owner: user, id: this.$route.params.id, user: this.to_remove })
-                    });
-                    const json = await response.json();
-                    this.pool = json.pool;
-                    this.to_remove = null;
-                } catch (error) {
-                    console.error("Error removing player:", error);
-                    // Handle error here
-                }
+                this.to_remove = null;
+            } catch (error) {
+                console.error("Error removing player:", error);
+                // Handle error here
             }
-        },
-        async created() {
-            console.log(this.$store.getters.userData.user.user.id)
-            await this.fetchData()
-            this.pool_invite_url = window.origin + "/pool/" + this.$route.params.id + "/join";
         }
+    },
+    async created() {
+        console.log(this.$store.getters.userData.user.user.id)
+        await this.fetchData()
+        this.pool_invite_url = window.origin + "/pool/" + this.$route.params.id + "/join";
     }
+}
 </script>
 
 <style scoped>
-    .nomargin {}
+.nomargin {}
 
-    .list-move,
-    /* apply transition to moving elements */
-    .list-enter-active,
-    .list-leave-active {
-        transition: all 0.2s ease;
-    }
+.list-move,
+/* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.2s ease;
+}
 
-    .list-enter-from,
-    .list-leave-to {
-        opacity: 0;
-        transform: translateX(30px);
-    }
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
 
-    /* ensure leaving items are taken out of layout flow so that moving
+/* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
-    .list-leave-active {
-        position: absolute;
-    }
+.list-leave-active {
+    position: absolute;
+}
 
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: opacity 0.5s ease;
-    }
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
 
-    .fade-enter-from,
-    .fade-leave-to {
-        opacity: 0;
-        position: absolute;
-    }
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    position: absolute;
+}
 </style>
