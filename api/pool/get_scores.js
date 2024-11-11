@@ -68,7 +68,7 @@ export default async function handler(request, response) {
                 halftimeScoreAway: 0,
                 fulltimeScoreHome: 0,
                 fulltimeScoreAway: 0,
-                userId: o.userId,
+                userId: poolUser.userId,
                 matchId: match.id,
             };
 
