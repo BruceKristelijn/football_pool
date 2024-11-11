@@ -179,7 +179,9 @@
                 // Sort users by score
                 console.log(this.pool.users)
                 const users = this.pool.users;
-                users.sort(function(a, b){return a-b});
+                users.sort();
+                users.reverse();
+                console.log(users)
                 this.pool.users = users;
                 console.log(this.pool.users)
 
