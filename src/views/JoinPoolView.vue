@@ -1,6 +1,6 @@
 <template>
     <div>
-        Joining pool...
+        Meedoen aan pool...
     </div>
 </template>
 

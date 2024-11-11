@@ -23,12 +23,12 @@
                     </div>
 
                     <!-- Location card -->
-                    <div class="badge badge-primary">
+                    <!-- <div class="badge badge-primary">
                         <p class="font-sm">
-                            <!-- {{ match.venue }} -->
+                             {{ match.venue }} 
                             TODO: Add venue support
                         </p>
-                    </div>
+                    </div> -->
 
                     <!-- Countdown -->
                     <div v-if="match_state == 0">
@@ -68,7 +68,7 @@
                                             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <span>
-                                        Prediction saved!
+                                        Voorspelling opgeslagen!
                                     </span>
                                 </div>
                             </transition>
@@ -91,7 +91,7 @@
                             <div class="gap-2 justify-center flex flex-row items-center mx-10">
 
                                 <label class="form-control flex flex-col w-full max-w-xs ">
-                                    Home
+                                    Thuis
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
                                         v-model="prediction.halftime.home" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
@@ -100,7 +100,7 @@
                                     <ScoreBadgeComponent :score="match.user_score.explainer.firstHalf" />
                                     <span class="w-1/2">-</span>
                                 </label>
-                                <label class="form-control flex flex-col w-full max-w-xs">Away
+                                <label class="form-control flex flex-col w-full max-w-xs">Bezoekers
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
                                         v-model="prediction.halftime.away" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
@@ -111,7 +111,7 @@
                             <div class="gap-2 justify-center flex flex-row items-center mx-10">
 
                                 <label class="form-control flex flex-col w-full max-w-xs">
-                                    Home
+                                    Thuis
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
                                         v-model="prediction.final.home" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
@@ -122,7 +122,7 @@
                                 </label>
                                
                                 <label class="form-control flex flex-col w-full max-w-xs">
-                                    Away
+                                    Bezoekers
                                     <input type="number" placeholder="" class="input input-bordered w-full my-1"
                                         v-model="prediction.final.away" @change="validateMatchPrediction"
                                         :disabled="match_state != 0" />
@@ -132,13 +132,13 @@
                             <!-- Submit button -->
                             <button class="btn btn-primary mt-4 w-3/4 mx-auto" :disabled="isMatchPredictionLoading"
                                 @click="saveMatchPrediction" v-if="match_state == 0">
-                                Save
+                                Opslaan
                                 <span class="loading loading-spinner loading-md" v-if="isMatchPredictionLoading"></span>
                             </button>
 
                             <!-- Score card -->
                             <div v-else>
-                                Prediction score: <br>
+                                Voorspelling uitslag: <br>
                                 <button v-if="match.user_score.explainer.multiplier < 1" class="btn btn-danger btn-sx mr-2" :disabled="true">
                                     x{{match.user_score.explainer.multiplier}}
                                 </button>

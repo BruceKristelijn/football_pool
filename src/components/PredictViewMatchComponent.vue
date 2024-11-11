@@ -54,12 +54,12 @@
             <div class="gap-2 justify-center flex flex-row items-center mx-10">
 
                 <label class="form-control flex flex-col w-full max-w-xs ">
-                    Home
+                    Thuis
                     <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.halftime.home" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
-                <label class="form-control flex flex-col w-full max-w-xs">Away
+                <label class="form-control flex flex-col w-full max-w-xs">Bezoekers
                     <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.halftime.away" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
@@ -72,13 +72,13 @@
             <div class="gap-2 justify-center flex flex-row items-center mx-10">
 
                 <label class="form-control flex flex-col w-full max-w-xs">
-                    Home
+                    Thuis
                     <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.final.home" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
                 </label>
                 <label class="form-control flex flex-col w-full max-w-xs">
-                    Away
+                    Bezoekers
                     <input type="number" placeholder="" class="input input-bordered w-full my-1 text-center"
                         v-model="prediction.final.away" @change="validateMatchPrediction"
                         :disabled="match_state != 0" />
@@ -90,7 +90,7 @@
             <button class="btn btn-primary block mt-10 mx-auto"
                 :disabled="isMatchPredictionLoading || predictionFormErrors.length > 0" @click="saveMatchPrediction"
                 v-if="match_state == 0">
-                Save
+                Opslaan
                 <span class="loading loading-spinner loading-md" v-if="isMatchPredictionLoading"></span>
             </button>
         </div>

@@ -4,14 +4,14 @@
         <div class="card bg-base-100 w-full shadow-xl self-center">
             <input type="text" placeholder="API Key" class="input input-bordered w-full max-w-xs m-5" v-model="api_key"/>
             <button class="btn" @click="saveApikeyToLocalStorage">
-                Save
+                Opslaan
                 <span class="loading loading-spinner loading-md" v-if="isSavingApiKey"></span>
             </button>
         </div>
 
         <div class="card bg-base-100 w-full shadow-xl self-center">
             <button class="btn btn-success" :disabled="isLoadingMatches" @click="fetchData">
-                Retrieve matches
+                Uitslagen ophalen
                 <span class="loading loading-spinner loading-md" v-if="isLoadingMatches"></span>
             </button>
         </div>

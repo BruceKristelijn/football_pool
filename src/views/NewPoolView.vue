@@ -19,7 +19,7 @@
                 <div v-if="!loading" class="card-body justify-center min-w-80 w-full">
                     <!-- Pool name input -->
                     <label class="label">
-                        <span class="label-text">Pool name</span>
+                        <span class="label-text">Pool naam</span>
                     </label>
                     <span v-f="poolNameError">{{poolNameError}}</span>
                     <label class="input-group input-group-vertical w-full">
@@ -30,7 +30,7 @@
                     <div class="form-control">
                         <label class="cursor-pointer label">
 
-                            <span class="label-text">Private pool</span>
+                            <span class="label-text">Privé pool</span>
                             <input type="checkbox" checked="checked" class="checkbox checkbox-primary" v-model="poolPrivate" />
                             
 
@@ -40,7 +40,7 @@
 
                     <!-- Team selector -->
                     <label class="label">
-                        <span class="label-text">Select a team to focus on</span>
+                        <span class="label-text">Kies een team om op te focussen</span>
                     </label>
                     <label class="input-group input-group-vertical">
                         <select class="select select-bordered" v-model="poolTeam">  
@@ -49,7 +49,7 @@
                     </label>
 
                     <!-- Submit -->
-                    <button class="btn btn-primary" @click="submitPool" :disabled="submitting">Create pool
+                    <button class="btn btn-primary" @click="submitPool" :disabled="submitting">Maak pool
                         <transition name="fade">
                             <span v-if="submitting" class="loading loading-spinner loading-md"></span>
                         </transition>
