@@ -176,7 +176,9 @@
 
                 // Sort users by score
                 console.log(this.pool.users)
-                this.pool.users.sort((a, b) => (a.score.score < b.score.score) ? 1 : -1);
+                const users = this.pool.users;
+                users.sort(function(a, b){return a-b});
+                this.pool.users = users;
                 console.log(this.pool.users)
 
                 this.loading = false;
