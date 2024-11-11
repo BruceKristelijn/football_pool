@@ -42,6 +42,12 @@ export default async function handler(request, response) {
         },
     });
 
+    const matches = await prisma.match.findMany({
+        include: {
+            predictions: true
+        }
+    });
+
     if (!pool) {
         return response.status(404).json({ error: 'Pool not found' });
     }
@@ -55,8 +61,15 @@ export default async function handler(request, response) {
 
     // Calculate the score for each user in the pool based on their predictions
     pool.users.forEach((poolUser) => {
-        poolUser.score = poolUser.predictions.reduce((totalScore, prediction) => {
-            const match = prediction.match;
+        poolUser.score = matches.reduce((totalScore, match) => {
+            const prediction = match.predictions.findFirst(o => o.userId == poolUser.id) ?? {
+                halftimeScoreHome: 0,
+                halftimeScoreAway: 0,
+                fulltimeScoreHome: 0,
+                fulltimeScoreAway: 0,
+                userId: userId,
+                matchId: match.id,
+            };
 
             // Add logic to calculate score based on match and prediction data
             //console.log(match, prediction);
@@ -65,7 +78,7 @@ export default async function handler(request, response) {
 
             return totalScore + matchScore;
         }, 0);
-        
+
     });
 
     return response.status(200).json({ pool });

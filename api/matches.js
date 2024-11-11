@@ -67,7 +67,15 @@ async function getMatches(request, response) {
 
     for (let i = 0; i < matches.length; i++) {
         if (matches[i].predictions.length === 0)
-            continue;
+        {
+            matches[i].predictions = [];
+            matches[i].predictions.push({
+                halftimeScoreHome: 0,
+                halftimeScoreAway: 0,
+                fulltimeScoreHome: 0,
+                fulltimeScoreAway: 0
+            });
+        }
 
         const score = await getScore(matches[i], matches[i].predictions[0]);
         matches[i].prediction = matches[i].predictions[0];
