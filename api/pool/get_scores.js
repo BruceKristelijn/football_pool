@@ -62,7 +62,8 @@ export default async function handler(request, response) {
     // Calculate the score for each user in the pool based on their predictions
     pool.users.forEach((poolUser) => {
         poolUser.score = matches.reduce((totalScore, match) => {
-            const prediction = match.predictions.findFirst(o => o.userId == poolUser.id) ?? {
+            if(!match.predictions) match.predictions = [];
+            const prediction = match.predictions.findLast(o => o.userId == poolUser.id) ?? {
                 halftimeScoreHome: 0,
                 halftimeScoreAway: 0,
                 fulltimeScoreHome: 0,
