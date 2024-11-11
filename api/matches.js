@@ -18,7 +18,7 @@ export default async function handler(request, response) {
 /// Gets all matches
 async function getMatches(request, response) {
     const body = request.body;
-    const { user } = body;
+    const { user, search_user_id } = body;
 
     const validationPayload = await validate(user.credential);
     if (validationPayload === false) {
@@ -31,15 +31,28 @@ async function getMatches(request, response) {
         }
     });
 
+    const other_user = await prisma.user.findUnique({
+        where: {
+            id: search_user_id
+        }
+    })
+
+    const prediction_query_where = {}, match_query_where = {}
+    prediction_query_where.userId = other_user ? other_user.id : db_user.id;
+
+    if (other_user)
+        match_query_where.utcDate = {
+            lte: new Date()  // Matches with a `utcDate` in the past or equal to now
+        }
+
     const matches = await prisma.match.findMany({
         orderBy: {
             utcDate: 'asc'
         },
+        where: match_query_where,
         include: {
             predictions: {
-                where: {
-                    userId: db_user.id
-                },
+                where: prediction_query_where,
                 select: {
                     id: true,
                     halftimeScoreHome: true,

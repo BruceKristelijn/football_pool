@@ -35,10 +35,10 @@
                 const url = `${window.location.origin}/api/matches`
                 const body = {}
                 const user_id = this.$route.query.user_id; // User ID is the ID to look for if we want to inspect other peoples scores.
+                const user = this.$store.getters.userData;
+                body.user = user;
+
                 if(user_id){ 
-                    const user = this.$store.getters.userData;
-                    body.user = user;
-                } else {
                     body.search_user_id = user_id;
                 }
                 const response = await fetch(url, {
