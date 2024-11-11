@@ -33,7 +33,7 @@ async function getMatches(request, response) {
 
     const other_user = await prisma.user.findUnique({
         where: {
-            id: Number.parseInt(search_user_id) ?? -1
+            id: Number.parseInt(search_user_id ?? "-1")
         }
     })
 
