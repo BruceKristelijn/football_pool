@@ -181,7 +181,7 @@ export default {
             // Sort users by score
             console.log(this.pool.users)
             const users = this.pool.users;
-            users.sort();
+            users.sort((a, b) => a.score - b.score);
             users.reverse();
             console.log(users)
             this.pool.users = users;
