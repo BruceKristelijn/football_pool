@@ -31,6 +31,10 @@ export function getScore(match, prediction) {
         return { score, explainer: { firstHalf: 0, secondHalf: 0, multiplier: 1 } };
     }
 
+    if(match.utcDate > new Date()) {
+        return { score, explainer: { firstHalf: 0, secondHalf: 0, multiplier: 1 } };
+    }
+
     let halftimeWinnerCorrect = false;
     let fulltimeWinnerCorrect = false;
     let halftimeScoreCorrect = 0;
